@@ -9,7 +9,9 @@ def test_parser_accepts_version_flag() -> None:
     """The parser should expose the version option."""
     parser = build_parser()
     version_action = next(
-        action for action in parser._actions if "--version" in action.option_strings
+        action
+        for action in parser._actions
+        if "--version" in action.option_strings
     )
     assert version_action is not None
 
