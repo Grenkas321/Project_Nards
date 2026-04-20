@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from nardy.app.bootstrap import build_parser, main
 
 
@@ -16,6 +18,31 @@ def test_parser_accepts_version_flag() -> None:
     assert version_action is not None
 
 
-def test_main_returns_success_for_default_arguments() -> None:
-    """The bootstrap entry point should succeed without arguments."""
-    assert main([]) == 0
+def test_main_runs_application(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The bootstrap entry point should create and run the application."""
+
+    class DummyApplication:
+        """Minimal stand-in for the application controller."""
+
+        def __init__(self) -> None:
+            """Initialize the dummy state."""
+            self.ran = False
+
+        def run(self) -> None:
+            """Record that the application was started."""
+            self.ran = True
+
+    application = DummyApplication()
+
+    def _build_application(locale_code: str = "en") -> DummyApplication:
+        """Return the dummy application for tests."""
+        assert locale_code == "ru"
+        return application
+
+    monkeypatch.setattr(
+        "nardy.app.bootstrap.build_application",
+        _build_application,
+    )
+
+    assert main(["--locale", "ru"]) == 0
+    assert application.ran is True

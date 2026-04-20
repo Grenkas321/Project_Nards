@@ -43,8 +43,71 @@ msgstr ""
 msgid "Current player"
 msgstr ""
 
+msgid "Mode"
+msgstr ""
+
+msgid "Turn phase"
+msgstr ""
+
 msgid "Dice"
 msgstr ""
 
-msgid "Game is in preparation."
+msgid "Choose a mode"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "White"
+msgstr ""
+
+msgid "Black"
+msgstr ""
+
+msgid "Unknown player"
+msgstr ""
+
+msgid "Waiting for roll"
+msgstr ""
+
+msgid "Ready to move"
+msgstr ""
+
+msgid "Turn complete"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Available moves"
+msgstr ""
+
+msgid "Board snapshot"
+msgstr ""
+
+msgid "No legal moves yet."
+msgstr ""
+
+msgid "Board is empty."
+msgstr ""
+
+msgid "Roll the dice to begin the turn."
+msgstr ""
+
+msgid "Select a legal move once board interaction is implemented."
+msgstr ""
+
+msgid "Turn is complete."
+msgstr ""
+
+msgid "{player} wins."
+msgstr ""
+
+msgid "Undo is unavailable."
 msgstr ""

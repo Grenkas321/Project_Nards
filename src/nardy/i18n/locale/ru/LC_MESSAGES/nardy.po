@@ -44,8 +44,71 @@ msgstr "Назад в меню"
 msgid "Current player"
 msgstr "Текущий игрок"
 
+msgid "Mode"
+msgstr "Режим"
+
+msgid "Turn phase"
+msgstr "Фаза хода"
+
 msgid "Dice"
 msgstr "Кости"
 
-msgid "Game is in preparation."
-msgstr "Игровой экран находится в разработке."
+msgid "Choose a mode"
+msgstr "Выберите режим"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "English"
+msgstr "Английский"
+
+msgid "Russian"
+msgstr "Русский"
+
+msgid "White"
+msgstr "Белые"
+
+msgid "Black"
+msgstr "Чёрные"
+
+msgid "Unknown player"
+msgstr "Неизвестный игрок"
+
+msgid "Waiting for roll"
+msgstr "Ожидание броска"
+
+msgid "Ready to move"
+msgstr "Ход готов"
+
+msgid "Turn complete"
+msgstr "Ход завершён"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Available moves"
+msgstr "Доступные ходы"
+
+msgid "Board snapshot"
+msgstr "Снимок доски"
+
+msgid "No legal moves yet."
+msgstr "Допустимых ходов пока нет."
+
+msgid "Board is empty."
+msgstr "Доска пуста."
+
+msgid "Roll the dice to begin the turn."
+msgstr "Бросьте кости, чтобы начать ход."
+
+msgid "Select a legal move once board interaction is implemented."
+msgstr "Выберите допустимый ход после добавления интерактивной доски."
+
+msgid "Turn is complete."
+msgstr "Ход завершён."
+
+msgid "{player} wins."
+msgstr "{player} побеждает."
+
+msgid "Undo is unavailable."
+msgstr "Отмена сейчас недоступна."

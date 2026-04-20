@@ -1,0 +1,34 @@
+"""Tests for pure application presentation helpers."""
+
+from __future__ import annotations
+
+from dataclasses import replace
+
+from nardy.app.presentation import present_game_state, present_victory
+from nardy.domain.models import Player
+from nardy.domain.rules_long import LongNardyRules
+from nardy.i18n import Localizer
+
+
+def test_present_game_state_exposes_labels_and_board_snapshot() -> None:
+    """The game presenter should summarize the state for the UI."""
+    localizer = Localizer()
+    state = LongNardyRules().initial_state()
+
+    data = present_game_state(localizer, state=state, can_undo=False)
+
+    assert data.subtitle == "Mode: Long backgammon"
+    assert data.current_player == "Current player: White"
+    assert data.can_roll is True
+    assert data.board_lines[0] == "24: White x15"
+
+
+def test_present_victory_formats_the_winner_message() -> None:
+    """The victory presenter should include the translated winner name."""
+    localizer = Localizer()
+    state = replace(LongNardyRules().initial_state(), winner=Player.WHITE)
+
+    data = present_victory(localizer, state)
+
+    assert data.title == "Victory"
+    assert data.summary == "White wins."
