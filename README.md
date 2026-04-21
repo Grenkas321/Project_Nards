@@ -67,6 +67,13 @@ python -m doit check
 nardy
 ```
 
+Для локальной игры в двух отдельных процессах через сокеты:
+
+```bash
+nardy --server --socket-host 127.0.0.1 --socket-port 8765 --locale ru
+nardy --join --socket-host 127.0.0.1 --socket-port 8765 --locale ru
+```
+
 ## Команды автоматизации
 
 ```bash

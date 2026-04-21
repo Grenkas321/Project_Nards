@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from dataclasses import dataclass
 
-from nardy.domain.models import GameMode, GameState, Move, Player, TurnPhase
+from nardy.domain.models import GameMode, GameState, Player, TurnPhase
 from nardy.i18n import Localizer, gettext_noop as _
 
 
@@ -15,12 +14,8 @@ class GameScreenData:
 
     title: str
     subtitle: str
-    current_player: str
-    turn_phase: str
-    dice: str
     status: str
-    move_lines: tuple[str, ...]
-    board_lines: tuple[str, ...]
+    dice: str
     can_roll: bool
     can_undo: bool
 
@@ -41,38 +36,14 @@ def present_game_state(
 ) -> GameScreenData:
     """Convert a domain state into UI-friendly strings."""
     translate = localizer.gettext
-    dice_value = (
-        "-"
-        if state.turn.dice is None
-        else ", ".join(str(value) for value in state.turn.dice.values)
-    )
-    move_lines = tuple(
-        _format_move(move) for move in state.turn.legal_moves
-    ) or (translate(_("No legal moves yet.")),)
-    board_lines = tuple(
-        _format_board_line(translate, state, point)
-        for point in range(24, 0, -1)
-        if state.point(point).checkers
-    ) or (translate(_("Board is empty.")),)
-
     return GameScreenData(
         title=translate(_("Nardy")),
         subtitle=(
             f"{translate(_('Mode'))}: "
             f"{translate(_mode_label(state.mode))}"
         ),
-        current_player=(
-            f"{translate(_('Current player'))}: "
-            f"{translate(_player_label(state.current_player))}"
-        ),
-        turn_phase=(
-            f"{translate(_('Turn phase'))}: "
-            f"{translate(_phase_label(state.turn.phase))}"
-        ),
-        dice=f"{translate(_('Dice'))}: {dice_value}",
-        status=status_override or translate(_status_message(state.turn.phase)),
-        move_lines=move_lines,
-        board_lines=board_lines,
+        status=status_override or translate(_status_message(state)),
+        dice=f"{translate(_('Dice'))}: {_dice_text(state)}",
         can_roll=state.turn.phase is TurnPhase.WAITING_FOR_ROLL,
         can_undo=can_undo,
     )
@@ -90,27 +61,6 @@ def present_victory(localizer: Localizer, state: GameState) -> VictoryScreenData
     )
 
 
-def _format_move(move: Move) -> str:
-    """Render a legal move into a compact human-readable form."""
-    suffix = ""
-    if move.captures:
-        suffix = " x"
-    if move.bears_off:
-        suffix = " off"
-    return f"{move.source} -> {move.target} ({move.die_value}){suffix}"
-
-
-def _format_board_line(
-    translate: Callable[[str], str],
-    state: GameState,
-    point_number: int,
-) -> str:
-    """Render one occupied board point."""
-    point = state.point(point_number)
-    owner = translate(_player_label(point.owner))
-    return f"{point_number:>2}: {owner} x{point.checkers}"
-
-
 def _mode_label(mode: GameMode) -> str:
     """Return a translatable label for a game mode."""
     return _("Long backgammon") if mode is GameMode.LONG else _("Short backgammon")
@@ -125,19 +75,25 @@ def _player_label(player: Player | None) -> str:
     return _("Unknown player")
 
 
-def _phase_label(phase: TurnPhase) -> str:
-    """Return a translatable label for a turn phase."""
-    if phase is TurnPhase.WAITING_FOR_ROLL:
-        return _("Waiting for roll")
-    if phase is TurnPhase.READY_TO_MOVE:
-        return _("Ready to move")
-    return _("Turn complete")
+def _status_message(state: GameState) -> str:
+    """Return a default status message for the current game phase."""
+    if state.turn.phase is TurnPhase.WAITING_FOR_ROLL:
+        return _("{player}: roll dice.").format(
+            player=_player_label(state.current_player)
+        )
+    if state.turn.phase is TurnPhase.READY_TO_MOVE:
+        return _("{player}: choose a highlighted checker.").format(
+            player=_player_label(state.current_player)
+        )
+    return _("{player}: turn finished.").format(
+        player=_player_label(state.current_player)
+    )
 
 
-def _status_message(phase: TurnPhase) -> str:
-    """Return a default status message for the turn phase."""
-    if phase is TurnPhase.WAITING_FOR_ROLL:
-        return _("Roll the dice to begin the turn.")
-    if phase is TurnPhase.READY_TO_MOVE:
-        return _("Select a legal move once board interaction is implemented.")
-    return _("Turn is complete.")
+def _dice_text(state: GameState) -> str:
+    """Render dice information for the status area."""
+    if state.turn.dice is None:
+        return "-"
+    rolled = ",".join(str(value) for value in state.turn.dice.values)
+    remaining = ",".join(str(value) for value in state.turn.remaining_pips)
+    return f"{rolled} [{remaining or '-'}]"

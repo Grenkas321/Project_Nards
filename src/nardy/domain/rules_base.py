@@ -8,6 +8,8 @@ from dataclasses import replace
 from typing import Callable, Mapping
 
 from nardy.domain.models import (
+    BAR_POSITION,
+    BOARD_POINT_COUNT,
     OFF_POSITION,
     TOTAL_CHECKERS,
     DiceRoll,
@@ -164,8 +166,18 @@ class BaseRuleset(Ruleset):
         die_value: int,
     ) -> bool:
         """Return ``True`` when a checker may leave the board."""
-        _ = (state, player, source, die_value)
-        return False
+        if state.bar_for(player) > 0:
+            return False
+        if not self._all_checkers_in_home(state, player):
+            return False
+        if source not in self.home_points_for(player):
+            return False
+        target = source + self.direction_for(player) * die_value
+        if 1 <= target <= BOARD_POINT_COUNT:
+            return False
+        if self._is_exact_bear_off(player, source, die_value):
+            return True
+        return self._can_bear_off_with_overshoot(state, player, source)
 
     def _ensure_mode(self, state: GameState) -> None:
         """Protect against mixing states and rulesets."""
@@ -174,16 +186,23 @@ class BaseRuleset(Ruleset):
 
     def _relocate_checker(self, state: GameState, move: Move) -> GameState:
         """Move a checker on the immutable board and update counters."""
-        source_state = state.point(move.source)
-        if source_state.owner is not move.player or source_state.checkers == 0:
-            raise RuleViolationError(
-                "The source point has no checker for the player."
+        if move.source == BAR_POSITION:
+            bar_count = state.bar_for(move.player)
+            if bar_count <= 0:
+                raise RuleViolationError(
+                    "There is no checker for the player on the bar."
+                )
+            next_state = state.with_bar(move.player, bar_count - 1)
+        else:
+            source_state = state.point(move.source)
+            if source_state.owner is not move.player or source_state.checkers == 0:
+                raise RuleViolationError(
+                    "The source point has no checker for the player."
+                )
+            next_state = state.replace_point(
+                move.source,
+                source_state.remove_checker(move.player),
             )
-
-        next_state = state.replace_point(
-            move.source,
-            source_state.remove_checker(move.player),
-        )
 
         if move.bears_off or move.target == OFF_POSITION:
             return next_state.with_borne_off(
@@ -204,4 +223,55 @@ class BaseRuleset(Ruleset):
         return next_state.replace_point(
             move.target,
             target_state.add_checker(move.player),
+        )
+
+    def home_points_for(self, player: Player) -> range:
+        """Return the player's home board points."""
+        if self.direction_for(player) < 0:
+            return range(1, 7)
+        return range(BOARD_POINT_COUNT - 5, BOARD_POINT_COUNT + 1)
+
+    def _all_checkers_in_home(self, state: GameState, player: Player) -> bool:
+        """Return ``True`` when all active checkers are in the home board."""
+        home_points = set(self.home_points_for(player))
+        home_checkers = sum(
+            state.point(point).checkers
+            for point in home_points
+            if state.point(point).owner is player
+        )
+        return (
+            home_checkers + state.borne_off_for(player) >= TOTAL_CHECKERS
+            and state.bar_for(player) == 0
+        )
+
+    def _is_exact_bear_off(
+        self,
+        player: Player,
+        source: int,
+        die_value: int,
+    ) -> bool:
+        """Return ``True`` for exact die values that bear off from source."""
+        if self.direction_for(player) < 0:
+            return source == die_value
+        return source + die_value == OFF_POSITION
+
+    def _can_bear_off_with_overshoot(
+        self,
+        state: GameState,
+        player: Player,
+        source: int,
+    ) -> bool:
+        """Allow overshoot only from the farthest occupied home point."""
+        if self.direction_for(player) < 0:
+            higher_points = range(source + 1, 7)
+            return not any(
+                state.point(point).owner is player
+                and state.point(point).checkers > 0
+                for point in higher_points
+            )
+        lower_points = range(BOARD_POINT_COUNT - 5, source)
+        return not any(
+            state.point(point).owner is player
+            and state.point(point).checkers > 0
+            for point in lower_points
         )

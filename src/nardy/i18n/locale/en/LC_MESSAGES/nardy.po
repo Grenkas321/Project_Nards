@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nardy 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-20 16:02+0300\n"
+"POT-Creation-Date: 2026-04-22 01:21+0300\n"
 "PO-Revision-Date: 2026-04-20 00:00+0000\n"
 "Last-Translator: Nardy Team\n"
 "Language: en\n"
@@ -14,113 +14,80 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/nardy/app/controller.py:59
+#: src/nardy/app/controller.py:75
 msgid "Undo is unavailable."
 msgstr "Undo is unavailable."
 
-#: src/nardy/app/controller.py:108 src/nardy/app/controller.py:123
-#: src/nardy/app/presentation.py:59 src/nardy/ui/main_menu.py:34
+#: src/nardy/app/controller.py:200 src/nardy/app/controller.py:241
+#: src/nardy/app/presentation.py:40 src/nardy/ui/main_menu.py:34
 msgid "Nardy"
 msgstr "Nardy"
 
-#: src/nardy/app/controller.py:143 src/nardy/app/presentation.py:86
+#: src/nardy/app/controller.py:227
+msgid "Waiting for opponent."
+msgstr ""
+
+#: src/nardy/app/controller.py:260 src/nardy/app/presentation.py:57
 msgid "Victory"
 msgstr "Victory"
 
-#: src/nardy/app/presentation.py:51
-msgid "No legal moves yet."
-msgstr "No legal moves yet."
-
-#: src/nardy/app/presentation.py:56
-msgid "Board is empty."
-msgstr "Board is empty."
-
-#: src/nardy/app/presentation.py:61 src/nardy/ui/main_menu.py:45
+#: src/nardy/app/presentation.py:42 src/nardy/ui/main_menu.py:45
 msgid "Mode"
 msgstr "Mode"
 
-#: src/nardy/app/presentation.py:65
-msgid "Current player"
-msgstr "Current player"
-
-#: src/nardy/app/presentation.py:69
-msgid "Turn phase"
-msgstr "Turn phase"
-
-#: src/nardy/app/presentation.py:72
+#: src/nardy/app/presentation.py:46
 msgid "Dice"
 msgstr "Dice"
 
-#: src/nardy/app/presentation.py:87
+#: src/nardy/app/presentation.py:58
 #, python-brace-format
 msgid "{player} wins."
 msgstr "{player} wins."
 
-#: src/nardy/app/presentation.py:116 src/nardy/ui/main_menu.py:50
+#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:50
 msgid "Long backgammon"
 msgstr "Long backgammon"
 
-#: src/nardy/app/presentation.py:116 src/nardy/ui/main_menu.py:55
+#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:55
 msgid "Short backgammon"
 msgstr "Short backgammon"
 
-#: src/nardy/app/presentation.py:122
+#: src/nardy/app/presentation.py:72 src/nardy/ui/game_screen.py:322
 msgid "White"
 msgstr "White"
 
-#: src/nardy/app/presentation.py:124
+#: src/nardy/app/presentation.py:74 src/nardy/ui/game_screen.py:324
 msgid "Black"
 msgstr "Black"
 
-#: src/nardy/app/presentation.py:125
+#: src/nardy/app/presentation.py:75
 msgid "Unknown player"
 msgstr "Unknown player"
 
-#: src/nardy/app/presentation.py:131
-msgid "Waiting for roll"
-msgstr "Waiting for roll"
+#: src/nardy/app/presentation.py:81
+#, fuzzy, python-brace-format
+msgid "{player}: roll dice."
+msgstr "{player} wins."
 
-#: src/nardy/app/presentation.py:133
-msgid "Ready to move"
-msgstr "Ready to move"
+#: src/nardy/app/presentation.py:85
+#, python-brace-format
+msgid "{player}: choose a highlighted checker."
+msgstr ""
 
-#: src/nardy/app/presentation.py:134
-msgid "Turn complete"
-msgstr "Turn complete"
+#: src/nardy/app/presentation.py:88
+#, fuzzy, python-brace-format
+msgid "{player}: turn finished."
+msgstr "{player} wins."
 
-#: src/nardy/app/presentation.py:140
-msgid "Roll the dice to begin the turn."
-msgstr "Roll the dice to begin the turn."
-
-#: src/nardy/app/presentation.py:142
-msgid "Select a legal move once board interaction is implemented."
-msgstr "Select a legal move once board interaction is implemented."
-
-#: src/nardy/app/presentation.py:143
-msgid "Turn is complete."
-msgstr "Turn is complete."
-
-#: src/nardy/ui/game_screen.py:39
-msgid "Status"
-msgstr "Status"
-
-#: src/nardy/ui/game_screen.py:59
-msgid "Available moves"
-msgstr "Available moves"
-
-#: src/nardy/ui/game_screen.py:72
-msgid "Board snapshot"
-msgstr "Board snapshot"
-
-#: src/nardy/ui/game_screen.py:98
+#: src/nardy/ui/game_screen.py:105
 msgid "Roll dice"
 msgstr "Roll dice"
 
-#: src/nardy/ui/game_screen.py:104
+#: src/nardy/ui/game_screen.py:111
 msgid "Undo"
 msgstr "Undo"
 
-#: src/nardy/ui/game_screen.py:110 src/nardy/ui/victory_screen.py:44
+#: src/nardy/ui/game_screen.py:117 src/nardy/ui/victory_screen.py:44
 msgid "Back to menu"
 msgstr "Back to menu"
 
@@ -149,4 +116,43 @@ msgstr "Exit"
 
 #~ msgid "Settings"
 #~ msgstr "Settings"
+
+#~ msgid "No legal moves yet."
+#~ msgstr "No legal moves yet."
+
+#~ msgid "Board is empty."
+#~ msgstr "Board is empty."
+
+#~ msgid "Current player"
+#~ msgstr "Current player"
+
+#~ msgid "Turn phase"
+#~ msgstr "Turn phase"
+
+#~ msgid "Waiting for roll"
+#~ msgstr "Waiting for roll"
+
+#~ msgid "Ready to move"
+#~ msgstr "Ready to move"
+
+#~ msgid "Turn complete"
+#~ msgstr "Turn complete"
+
+#~ msgid "Roll the dice to begin the turn."
+#~ msgstr "Roll the dice to begin the turn."
+
+#~ msgid "Select a legal move once board interaction is implemented."
+#~ msgstr "Select a legal move once board interaction is implemented."
+
+#~ msgid "Turn is complete."
+#~ msgstr "Turn is complete."
+
+#~ msgid "Status"
+#~ msgstr "Status"
+
+#~ msgid "Available moves"
+#~ msgstr "Available moves"
+
+#~ msgid "Board snapshot"
+#~ msgstr "Board snapshot"
 

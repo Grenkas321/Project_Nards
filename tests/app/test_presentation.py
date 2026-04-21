@@ -10,17 +10,17 @@ from nardy.domain.rules_long import LongNardyRules
 from nardy.i18n import Localizer
 
 
-def test_present_game_state_exposes_labels_and_board_snapshot() -> None:
-    """The game presenter should summarize the state for the UI."""
+def test_present_game_state_exposes_mode_and_action_hint() -> None:
+    """The game presenter should provide compact labels for the screen."""
     localizer = Localizer()
     state = LongNardyRules().initial_state()
 
     data = present_game_state(localizer, state=state, can_undo=False)
 
     assert data.subtitle == "Mode: Long backgammon"
-    assert data.current_player == "Current player: White"
+    assert data.status == "White: roll dice."
     assert data.can_roll is True
-    assert data.board_lines[0] == "24: White x15"
+    assert data.can_undo is False
 
 
 def test_present_victory_formats_the_winner_message() -> None:

@@ -5,12 +5,12 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Mapping
 
-from nardy.domain.models import GameMode, GameState, Move, TurnPhase
+from nardy.domain.models import GameMode, GameState, Move, Player, TurnPhase
 from nardy.domain.move_generator import MoveGenerator
 from nardy.domain.rules_long import LongNardyRules
 from nardy.domain.rules_base import Ruleset
 from nardy.domain.rules_short import ShortNardyRules
-from nardy.domain.undo import SnapshotStore
+from nardy.domain.undo import UndoUnavailableError
 
 
 class GameEngine:
@@ -19,8 +19,10 @@ class GameEngine:
     def __init__(self, rules_by_mode: Mapping[GameMode, Ruleset]) -> None:
         """Bind the engine to a registry of rulesets."""
         self._rules_by_mode = dict(rules_by_mode)
-        self._history = SnapshotStore()
         self._state: GameState | None = None
+        self._turn_start_snapshot: GameState | None = None
+        self._undo_snapshot: GameState | None = None
+        self._undo_player: Player | None = None
 
     @property
     def state(self) -> GameState:
@@ -30,17 +32,29 @@ class GameEngine:
     def start_new_game(self, mode: GameMode) -> GameState:
         """Create a fresh state for the selected mode."""
         rules = self._rules(mode)
-        self._history.clear()
+        self._turn_start_snapshot = None
+        self._undo_snapshot = None
+        self._undo_player = None
         self._state = self._refresh_turn_state(rules.initial_state())
         return self._state
 
     def roll_dice(self) -> GameState:
         """Start the active turn by rolling two dice."""
         state = self._require_state()
+        if (
+            self._undo_player is state.current_player.opponent
+            and self._undo_snapshot is not None
+        ):
+            self._undo_snapshot = None
+            self._undo_player = None
         rules = self._rules(state.mode)
-        self._history.push(state)
-        self._state = self._refresh_turn_state(rules.start_turn(state))
-        return self._state
+        self._turn_start_snapshot = state
+        rolled = self._refresh_turn_state(rules.start_turn(state))
+        if rolled.turn.phase is TurnPhase.TURN_COMPLETE:
+            self._state = rolled
+            return self.end_turn()
+        self._state = rolled
+        return rolled
 
     def available_moves(self) -> tuple[Move, ...]:
         """Expose the currently cached legal moves."""
@@ -50,26 +64,50 @@ class GameEngine:
         """Apply a legal move and refresh the move list."""
         state = self._require_state()
         rules = self._rules(state.mode)
-        self._history.push(state)
-        self._state = self._refresh_turn_state(rules.apply_move(state, move))
-        return self._state
+        next_state = self._refresh_turn_state(rules.apply_move(state, move))
+        if next_state.turn.phase is TurnPhase.TURN_COMPLETE:
+            self._state = next_state
+            return self.end_turn()
+        self._state = next_state
+        return next_state
 
     def end_turn(self) -> GameState:
         """Finish the current turn and hand control to the opponent."""
         state = self._require_state()
         rules = self._rules(state.mode)
-        self._history.push(state)
-        self._state = self._refresh_turn_state(rules.end_turn(state))
-        return self._state
+        ended_player = state.current_player
+        next_state = self._refresh_turn_state(rules.end_turn(state))
+        if self._turn_start_snapshot is not None:
+            self._undo_snapshot = self._turn_start_snapshot
+            self._undo_player = ended_player
+        self._turn_start_snapshot = None
+        self._state = next_state
+        return next_state
 
-    def undo(self) -> GameState:
+    def undo(self, player: Player) -> GameState:
         """Restore the previous snapshot."""
-        self._state = self._history.pop()
+        state = self._require_state()
+        if (
+            self._undo_snapshot is None
+            or self._undo_player is not player
+            or state.turn.phase is not TurnPhase.WAITING_FOR_ROLL
+        ):
+            raise UndoUnavailableError("No snapshots are available for undo.")
+        self._state = self._undo_snapshot
+        self._undo_snapshot = None
+        self._undo_player = None
+        self._turn_start_snapshot = None
         return self._state
 
-    def can_undo(self) -> bool:
+    def can_undo(self, player: Player) -> bool:
         """Return ``True`` when undo is available."""
-        return self._history.can_undo()
+        state = self._state
+        return (
+            state is not None
+            and self._undo_snapshot is not None
+            and self._undo_player is player
+            and state.turn.phase is TurnPhase.WAITING_FOR_ROLL
+        )
 
     def _refresh_turn_state(self, state: GameState) -> GameState:
         """Recompute legal moves for the current state."""
