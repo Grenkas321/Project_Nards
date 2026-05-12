@@ -310,7 +310,7 @@ class GameScreen(ttk.Frame):
         self._canvas.create_text(
             center_x,
             24 if top else CANVAS_HEIGHT - 24,
-            text=f"bar {count}",
+            text=f"{self._translate(_('Bar'))} {count}",
             fill="#3b2b1f",
             font=("Segoe UI", 9, "bold"),
             tags=("checker",),
@@ -458,7 +458,10 @@ class GameScreen(ttk.Frame):
         def _step(index: int) -> None:
             if index > steps:
                 self._canvas.delete(token)
-                if move.captures or move.bears_off:
+                if move.captures:
+                    self._explode_capture(end)
+                    return
+                if move.bears_off:
                     self._explode(end)
                 return
             progress = index / steps
@@ -536,6 +539,101 @@ class GameScreen(ttk.Frame):
             self.after(18, lambda: _expand(radius + 4))
 
         _expand(2)
+
+    def _explode_capture(self, center: tuple[float, float]) -> None:
+        """Render a stronger explosion for captured enemy checkers."""
+        core = self._canvas.create_oval(
+            center[0] - 4,
+            center[1] - 4,
+            center[0] + 4,
+            center[1] + 4,
+            fill="#ff3b30",
+            outline="#ffe08a",
+            width=2,
+            tags=("anim",),
+        )
+        ring_outer = self._canvas.create_oval(
+            center[0],
+            center[1],
+            center[0],
+            center[1],
+            outline="#ff6a00",
+            width=4,
+            tags=("anim",),
+        )
+        ring_inner = self._canvas.create_oval(
+            center[0],
+            center[1],
+            center[0],
+            center[1],
+            outline="#ffd166",
+            width=3,
+            tags=("anim",),
+        )
+        sparks = []
+        for _spark_index in range(12):
+            spark = self._canvas.create_line(
+                center[0],
+                center[1],
+                center[0],
+                center[1],
+                fill="#ff533d",
+                width=2,
+                tags=("anim",),
+            )
+            sparks.append(spark)
+
+        def _burst(radius: int) -> None:
+            if radius > 36:
+                self._canvas.delete(core)
+                self._canvas.delete(ring_outer)
+                self._canvas.delete(ring_inner)
+                for spark in sparks:
+                    self._canvas.delete(spark)
+                return
+
+            # Pulsing core and two expanding rings.
+            glow = 4 + (radius % 8) / 2
+            self._canvas.coords(
+                core,
+                center[0] - glow,
+                center[1] - glow,
+                center[0] + glow,
+                center[1] + glow,
+            )
+            self._canvas.coords(
+                ring_outer,
+                center[0] - radius,
+                center[1] - radius,
+                center[0] + radius,
+                center[1] + radius,
+            )
+            self._canvas.coords(
+                ring_inner,
+                center[0] - radius * 0.6,
+                center[1] - radius * 0.6,
+                center[0] + radius * 0.6,
+                center[1] + radius * 0.6,
+            )
+
+            for index, spark in enumerate(sparks):
+                dx = radius * (0.2 + (index % 6) * 0.12)
+                dy = radius * (0.2 + (index // 6) * 0.28)
+                if index % 2:
+                    dx = -dx
+                if index >= 6:
+                    dy = -dy
+                self._canvas.coords(
+                    spark,
+                    center[0],
+                    center[1],
+                    center[0] + dx,
+                    center[1] + dy,
+                )
+
+            self.after(16, lambda: _burst(radius + 5))
+
+        _burst(2)
 
     def _point_rect(self, point: int) -> tuple[float, float, float, float]:
         """Return the clickable rectangle for a board point."""

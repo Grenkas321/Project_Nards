@@ -235,7 +235,7 @@ class AppController:
             screen_data = replace(
                 screen_data,
                 can_roll=False,
-                can_undo=False,
+                can_undo=screen_data.can_undo,
             )
         self._current_screen = "game"
         self._shell.set_title(self._localizer.gettext(_("Nardy")))

@@ -24,8 +24,8 @@ def test_long_mode_initial_layout_matches_classic_head_start() -> None:
     state = LongNardyRules().initial_state()
     assert state.point(24).owner is Player.WHITE
     assert state.point(24).checkers == 15
-    assert state.point(1).owner is Player.BLACK
-    assert state.point(1).checkers == 15
+    assert state.point(12).owner is Player.BLACK
+    assert state.point(12).checkers == 15
 
 
 def test_short_mode_initial_layout_matches_backgammon() -> None:

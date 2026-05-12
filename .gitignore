@@ -24,9 +24,6 @@ htmlcov/
 # Documentation
 docs/_build/
 
-# Babel compiled files
-*.mo
-
 # Doit database
 .doit.db
 

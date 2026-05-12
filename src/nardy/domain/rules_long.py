@@ -17,7 +17,7 @@ class LongNardyRules(BaseRuleset):
         """Return the starting positions for long backgammon."""
         return {
             24: (Player.WHITE, 15),
-            1: (Player.BLACK, 15),
+            12: (Player.BLACK, 15),
         }
 
     def direction_for(self, player: Player) -> int:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Callable
 
 from nardy.domain.models import GameMode, GameState, Player, TurnPhase
 from nardy.i18n import Localizer, gettext_noop as _
@@ -42,7 +43,7 @@ def present_game_state(
             f"{translate(_('Mode'))}: "
             f"{translate(_mode_label(state.mode))}"
         ),
-        status=status_override or translate(_status_message(state)),
+        status=status_override or _status_message(translate, state),
         dice=f"{translate(_('Dice'))}: {_dice_text(state)}",
         can_roll=state.turn.phase is TurnPhase.WAITING_FOR_ROLL,
         can_undo=can_undo,
@@ -75,18 +76,22 @@ def _player_label(player: Player | None) -> str:
     return _("Unknown player")
 
 
-def _status_message(state: GameState) -> str:
+def _status_message(
+    translate: Callable[[str], str],
+    state: GameState,
+) -> str:
     """Return a default status message for the current game phase."""
+    player = translate(_player_label(state.current_player))
     if state.turn.phase is TurnPhase.WAITING_FOR_ROLL:
-        return _("{player}: roll dice.").format(
-            player=_player_label(state.current_player)
+        return translate(_("{player}: roll dice.")).format(
+            player=player
         )
     if state.turn.phase is TurnPhase.READY_TO_MOVE:
-        return _("{player}: choose a highlighted checker.").format(
-            player=_player_label(state.current_player)
+        return translate(_("{player}: choose a highlighted checker.")).format(
+            player=player
         )
-    return _("{player}: turn finished.").format(
-        player=_player_label(state.current_player)
+    return translate(_("{player}: turn finished.")).format(
+        player=player
     )
 
 

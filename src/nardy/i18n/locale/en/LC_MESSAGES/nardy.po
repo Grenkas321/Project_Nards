@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nardy 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-11 21:05+0300\n"
+"POT-Creation-Date: 2026-05-12 14:17+0300\n"
 "PO-Revision-Date: 2026-04-20 00:00+0000\n"
 "Last-Translator: Nardy Team\n"
 "Language: en\n"
@@ -19,65 +19,65 @@ msgid "Undo is unavailable."
 msgstr "Undo is unavailable."
 
 #: src/nardy/app/controller.py:200 src/nardy/app/controller.py:241
-#: src/nardy/app/presentation.py:40 src/nardy/ui/main_menu.py:36
+#: src/nardy/app/presentation.py:41 src/nardy/ui/main_menu.py:36
 msgid "Nardy"
 msgstr "Nardy"
 
 #: src/nardy/app/controller.py:227
 msgid "Waiting for opponent."
-msgstr ""
+msgstr "Waiting for opponent."
 
-#: src/nardy/app/controller.py:260 src/nardy/app/presentation.py:57
+#: src/nardy/app/controller.py:260 src/nardy/app/presentation.py:58
 msgid "Victory"
 msgstr "Victory"
 
-#: src/nardy/app/presentation.py:42 src/nardy/ui/main_menu.py:47
+#: src/nardy/app/presentation.py:43 src/nardy/ui/main_menu.py:47
 msgid "Mode"
 msgstr "Mode"
 
-#: src/nardy/app/presentation.py:46
+#: src/nardy/app/presentation.py:47
 msgid "Dice"
 msgstr "Dice"
 
-#: src/nardy/app/presentation.py:58
+#: src/nardy/app/presentation.py:59
 #, python-brace-format
 msgid "{player} wins."
 msgstr "{player} wins."
 
-#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:52
+#: src/nardy/app/presentation.py:67 src/nardy/ui/main_menu.py:52
 msgid "Long backgammon"
 msgstr "Long backgammon"
 
-#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:57
+#: src/nardy/app/presentation.py:67 src/nardy/ui/main_menu.py:57
 msgid "Short backgammon"
 msgstr "Short backgammon"
 
-#: src/nardy/app/presentation.py:72 src/nardy/ui/game_screen.py:322
+#: src/nardy/app/presentation.py:73 src/nardy/ui/game_screen.py:322
 msgid "White"
 msgstr "White"
 
-#: src/nardy/app/presentation.py:74 src/nardy/ui/game_screen.py:324
+#: src/nardy/app/presentation.py:75 src/nardy/ui/game_screen.py:324
 msgid "Black"
 msgstr "Black"
 
-#: src/nardy/app/presentation.py:75
+#: src/nardy/app/presentation.py:76
 msgid "Unknown player"
 msgstr "Unknown player"
 
-#: src/nardy/app/presentation.py:81
-#, fuzzy, python-brace-format
+#: src/nardy/app/presentation.py:86
+#, python-brace-format
 msgid "{player}: roll dice."
-msgstr "{player} wins."
+msgstr "{player}: roll dice."
 
-#: src/nardy/app/presentation.py:85
+#: src/nardy/app/presentation.py:90
 #, python-brace-format
 msgid "{player}: choose a highlighted checker."
-msgstr ""
+msgstr "{player}: choose a highlighted checker."
 
-#: src/nardy/app/presentation.py:88
-#, fuzzy, python-brace-format
+#: src/nardy/app/presentation.py:93
+#, python-brace-format
 msgid "{player}: turn finished."
-msgstr "{player} wins."
+msgstr "{player}: turn finished."
 
 #: src/nardy/ui/game_screen.py:105
 msgid "Roll dice"
@@ -91,22 +91,25 @@ msgstr "Undo"
 msgid "Back to menu"
 msgstr "Back to menu"
 
+#: src/nardy/ui/game_screen.py:313
+msgid "Bar"
+msgstr ""
+
 #: src/nardy/ui/main_menu.py:43
 msgid "Choose a mode"
 msgstr "Choose a mode"
 
 #: src/nardy/ui/main_menu.py:62
-#, fuzzy
 msgid "LAN Game"
-msgstr "Language"
+msgstr "LAN Game"
 
 #: src/nardy/ui/main_menu.py:68
 msgid "Host Game"
-msgstr ""
+msgstr "Host Game"
 
 #: src/nardy/ui/main_menu.py:73
 msgid "Join Game"
-msgstr ""
+msgstr "Join Game"
 
 #: src/nardy/ui/main_menu.py:77
 msgid "Language"
@@ -126,27 +129,27 @@ msgstr "Exit"
 
 #: src/nardy/ui/main_menu.py:106
 msgid "Host LAN Game"
-msgstr ""
+msgstr "Host LAN Game"
 
 #: src/nardy/ui/main_menu.py:110 src/nardy/ui/main_menu.py:137
 msgid "Port:"
-msgstr ""
+msgstr "Port:"
 
 #: src/nardy/ui/main_menu.py:123
 msgid "Host"
-msgstr ""
+msgstr "Host"
 
 #: src/nardy/ui/main_menu.py:128
 msgid "Join LAN Game"
-msgstr ""
+msgstr "Join LAN Game"
 
 #: src/nardy/ui/main_menu.py:132
 msgid "Host IP:"
-msgstr ""
+msgstr "Host IP:"
 
 #: src/nardy/ui/main_menu.py:151
 msgid "Join"
-msgstr ""
+msgstr "Join"
 
 #~ msgid "New game"
 #~ msgstr "New game"
