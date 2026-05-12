@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-04-22 01:21+0300\n"
+"POT-Creation-Date: 2026-05-11 21:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Undo is unavailable."
 msgstr ""
 
 #: src/nardy/app/controller.py:200 src/nardy/app/controller.py:241
-#: src/nardy/app/presentation.py:40 src/nardy/ui/main_menu.py:34
+#: src/nardy/app/presentation.py:40 src/nardy/ui/main_menu.py:36
 msgid "Nardy"
 msgstr ""
 
@@ -34,7 +34,7 @@ msgstr ""
 msgid "Victory"
 msgstr ""
 
-#: src/nardy/app/presentation.py:42 src/nardy/ui/main_menu.py:45
+#: src/nardy/app/presentation.py:42 src/nardy/ui/main_menu.py:47
 msgid "Mode"
 msgstr ""
 
@@ -47,11 +47,11 @@ msgstr ""
 msgid "{player} wins."
 msgstr ""
 
-#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:50
+#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:52
 msgid "Long backgammon"
 msgstr ""
 
-#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:55
+#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:57
 msgid "Short backgammon"
 msgstr ""
 
@@ -94,23 +94,59 @@ msgstr ""
 msgid "Back to menu"
 msgstr ""
 
-#: src/nardy/ui/main_menu.py:41
+#: src/nardy/ui/main_menu.py:43
 msgid "Choose a mode"
 msgstr ""
 
-#: src/nardy/ui/main_menu.py:61
-msgid "Language"
+#: src/nardy/ui/main_menu.py:62
+msgid "LAN Game"
 msgstr ""
 
 #: src/nardy/ui/main_menu.py:68
-msgid "English"
+msgid "Host Game"
 msgstr ""
 
 #: src/nardy/ui/main_menu.py:73
+msgid "Join Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:77
+msgid "Language"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:84
+msgid "English"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:89
 msgid "Russian"
 msgstr ""
 
-#: src/nardy/ui/main_menu.py:79
+#: src/nardy/ui/main_menu.py:95
 msgid "Exit"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:106
+msgid "Host LAN Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:110 src/nardy/ui/main_menu.py:137
+msgid "Port:"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:123
+msgid "Host"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:128
+msgid "Join LAN Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:132
+msgid "Host IP:"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:151
+msgid "Join"
 msgstr ""
 

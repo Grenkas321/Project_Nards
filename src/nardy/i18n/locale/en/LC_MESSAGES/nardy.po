@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nardy 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-22 01:21+0300\n"
+"POT-Creation-Date: 2026-05-11 21:05+0300\n"
 "PO-Revision-Date: 2026-04-20 00:00+0000\n"
 "Last-Translator: Nardy Team\n"
 "Language: en\n"
@@ -19,7 +19,7 @@ msgid "Undo is unavailable."
 msgstr "Undo is unavailable."
 
 #: src/nardy/app/controller.py:200 src/nardy/app/controller.py:241
-#: src/nardy/app/presentation.py:40 src/nardy/ui/main_menu.py:34
+#: src/nardy/app/presentation.py:40 src/nardy/ui/main_menu.py:36
 msgid "Nardy"
 msgstr "Nardy"
 
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Victory"
 msgstr "Victory"
 
-#: src/nardy/app/presentation.py:42 src/nardy/ui/main_menu.py:45
+#: src/nardy/app/presentation.py:42 src/nardy/ui/main_menu.py:47
 msgid "Mode"
 msgstr "Mode"
 
@@ -44,11 +44,11 @@ msgstr "Dice"
 msgid "{player} wins."
 msgstr "{player} wins."
 
-#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:50
+#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:52
 msgid "Long backgammon"
 msgstr "Long backgammon"
 
-#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:55
+#: src/nardy/app/presentation.py:66 src/nardy/ui/main_menu.py:57
 msgid "Short backgammon"
 msgstr "Short backgammon"
 
@@ -91,25 +91,62 @@ msgstr "Undo"
 msgid "Back to menu"
 msgstr "Back to menu"
 
-#: src/nardy/ui/main_menu.py:41
+#: src/nardy/ui/main_menu.py:43
 msgid "Choose a mode"
 msgstr "Choose a mode"
 
-#: src/nardy/ui/main_menu.py:61
-msgid "Language"
+#: src/nardy/ui/main_menu.py:62
+#, fuzzy
+msgid "LAN Game"
 msgstr "Language"
 
 #: src/nardy/ui/main_menu.py:68
+msgid "Host Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:73
+msgid "Join Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:77
+msgid "Language"
+msgstr "Language"
+
+#: src/nardy/ui/main_menu.py:84
 msgid "English"
 msgstr "English"
 
-#: src/nardy/ui/main_menu.py:73
+#: src/nardy/ui/main_menu.py:89
 msgid "Russian"
 msgstr "Russian"
 
-#: src/nardy/ui/main_menu.py:79
+#: src/nardy/ui/main_menu.py:95
 msgid "Exit"
 msgstr "Exit"
+
+#: src/nardy/ui/main_menu.py:106
+msgid "Host LAN Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:110 src/nardy/ui/main_menu.py:137
+msgid "Port:"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:123
+msgid "Host"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:128
+msgid "Join LAN Game"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:132
+msgid "Host IP:"
+msgstr ""
+
+#: src/nardy/ui/main_menu.py:151
+msgid "Join"
+msgstr ""
 
 #~ msgid "New game"
 #~ msgstr "New game"

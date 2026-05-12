@@ -202,10 +202,9 @@ class RemoteEngineProxy:
         """Connect to server and join the two-player match."""
         self._host = host
         self._port = port
-        self._socket = socket.create_connection((host, port), timeout=5)
-        self._socket.settimeout(None)
-        self._stream = self._socket.makefile("rwb")
-        self._wait_socket: socket.socket | None = None
+        self._socket = None
+        self._stream = None
+        self._wait_socket = None
         self._wait_stream = None
         self._lock = threading.Lock()
         self._wait_lock = threading.Lock()
@@ -213,21 +212,41 @@ class RemoteEngineProxy:
         self._player: Player | None = None
         self._state: GameState | None = None
         self._version = -1
-        join_response = self._request("join", payload={})
-        self._client_id = str(join_response["client_id"])
-        self._player = Player(str(join_response["assigned_player"]))
-        self._version = int(join_response.get("version", -1))
-        self._state = _state_from_wire_optional(join_response.get("state"))
-        self._wait_socket = socket.create_connection(
-            (self._host, self._port),
-            timeout=5,
-        )
-        self._wait_socket.settimeout(None)
-        self._wait_stream = self._wait_socket.makefile("rwb")
+        self._error_message: str | None = None
+
+        try:
+            self._socket = socket.create_connection((host, port), timeout=5)
+            self._socket.settimeout(None)
+            self._stream = self._socket.makefile("rwb")
+            join_response = self._request("join", payload={})
+            self._client_id = str(join_response["client_id"])
+            self._player = Player(str(join_response["assigned_player"]))
+            self._version = int(join_response.get("version", -1))
+            self._state = _state_from_wire_optional(join_response.get("state"))
+
+            self._wait_socket = socket.create_connection((self._host, self._port), timeout=5)
+            self._wait_socket.settimeout(None)
+            self._wait_stream = self._wait_socket.makefile("rwb")
+        except (ConnectionRefusedError, TimeoutError, socket.error) as e:
+            self._error_message = f"Cannot connect to server at {host}:{port} – {e}"
+        except Exception as e:
+            self._error_message = f"Connection error: {e}"
+
+    @property
+    def is_connected(self) -> bool:
+        """Return True if the proxy successfully connected."""
+        return self._socket is not None and self._error_message is None
+
+    @property
+    def error(self) -> str | None:
+        """Return the connection error message if any."""
+        return self._error_message
 
     @property
     def player(self) -> Player:
         """Return the player controlled by this process."""
+        if not self.is_connected:
+            raise RuntimeError(self._error_message or "Not connected to server")
         if self._player is None:
             raise RuntimeError("Client is not assigned to a player.")
         return self._player
@@ -235,21 +254,26 @@ class RemoteEngineProxy:
     @property
     def state(self) -> GameState:
         """Return last synchronized state."""
+        if not self.is_connected:
+            raise RuntimeError(self._error_message or "Not connected to server")
         if self._state is None:
             raise RuntimeError("Game is not started yet.")
         return self._state
 
     def start_new_game(self, mode: GameMode) -> GameState:
         """Request match creation from the server."""
+        self._ensure_connected()
         response = self._request("start_game", payload={"mode": mode.value})
         return self._update_state(response)
 
     def roll_dice(self) -> GameState:
         """Roll dice on the authoritative server."""
+        self._ensure_connected()
         return self._update_state(self._request("roll_dice", payload={}))
 
     def apply_move(self, move: Move) -> GameState:
         """Apply one move on the authoritative server."""
+        self._ensure_connected()
         response = self._request(
             "apply_move",
             payload={"move": _move_to_wire(move)},
@@ -258,11 +282,13 @@ class RemoteEngineProxy:
 
     def undo(self, player: Player) -> GameState:
         """Undo the last completed turn for the given player."""
+        self._ensure_connected()
         _ = player
         return self._update_state(self._request("undo", payload={}))
 
     def can_undo(self, player: Player) -> bool:
         """Return undo availability for this client's player."""
+        self._ensure_connected()
         _ = player
         response = self._request("can_undo", payload={})
         self._update_state(response)
@@ -274,6 +300,7 @@ class RemoteEngineProxy:
 
     def poll_state(self) -> GameState | None:
         """Fetch latest state from server for passive updates."""
+        self._ensure_connected()
         response = self._request(
             "get_state",
             payload={"since_version": -1, "wait_ms": 0},
@@ -282,6 +309,7 @@ class RemoteEngineProxy:
 
     def wait_for_update(self, wait_ms: int = 30000) -> GameState | None:
         """Block until server state changes or timeout expires."""
+        self._ensure_connected()
         response = self._wait_request(
             "get_state",
             payload={
@@ -296,26 +324,32 @@ class RemoteEngineProxy:
 
     def close(self) -> None:
         """Close underlying socket resources."""
-        try:
-            if self._wait_socket is not None:
-                try:
-                    self._wait_socket.shutdown(socket.SHUT_RDWR)
-                except OSError:
-                    pass
+        if self._wait_socket is not None:
+            try:
+                self._wait_socket.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            self._wait_socket.close()
+        if self._socket is not None:
             try:
                 self._socket.shutdown(socket.SHUT_RDWR)
             except OSError:
                 pass
-            if self._wait_stream is not None:
-                self._wait_stream.close()
-            self._stream.close()
-        finally:
-            if self._wait_socket is not None:
-                self._wait_socket.close()
             self._socket.close()
+        if self._wait_stream is not None:
+            self._wait_stream.close()
+        if self._stream is not None:
+            self._stream.close()
+
+    def _ensure_connected(self) -> None:
+        """Raise an exception if connection failed."""
+        if not self.is_connected:
+            raise RuntimeError(self._error_message or "Not connected to server")
 
     def _request(self, action: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Send one action and decode one response."""
+        if self._stream is None:
+            raise RuntimeError("Socket stream is closed")
         request = {
             "action": action,
             "payload": payload,

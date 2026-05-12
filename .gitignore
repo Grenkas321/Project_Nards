@@ -1,17 +1,39 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.egg-info/
-.coverage
-.coverage.*
-coverage.xml
-.doit.db*
-.pytest_cache/
-.ruff_cache/
+*.so
+
+# Virtual environments
+env/
+venv/
 .venv/
-.vscode/
+
+# Build outputs
 build/
 dist/
-docs/_build/
+*.egg-info/
+*.egg
+
+# Testing
+.coverage
+coverage.xml
 htmlcov/
-pip-wheel-metadata/
-src/nardy/i18n/locale/**/*.mo
+.pytest_cache/
+.tox/
+
+# Documentation
+docs/_build/
+
+# Babel compiled files
+*.mo
+
+# Doit database
+.doit.db
+
+# IDE
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db

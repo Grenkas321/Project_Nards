@@ -44,13 +44,20 @@ def test_socket_match_rejects_third_player_join() -> None:
 
     first = RemoteEngineProxy(port=port)
     second = RemoteEngineProxy(port=port)
+    third = RemoteEngineProxy(port=port)
 
     try:
+        assert first.is_connected is True
+        assert second.is_connected is True
+        # Third client should fail to connect (server rejects)
+        assert third.is_connected is False
+        assert third.error is not None
         with pytest.raises(RuntimeError, match="two players"):
-            RemoteEngineProxy(port=port)
+            third.start_new_game(GameMode.LONG)  # or any action
     finally:
         first.close()
         second.close()
+        third.close()
 
 
 def test_wait_for_update_returns_none_when_state_is_unchanged() -> None:
@@ -161,3 +168,12 @@ def _free_port() -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.bind(("127.0.0.1", 0))
         return int(sock.getsockname()[1])
+
+
+def test_remote_proxy_connection_refused() -> None:
+    """Client should raise an error when server is not reachable."""
+    proxy = RemoteEngineProxy(host="127.0.0.1", port=9999)
+    assert proxy.is_connected is False
+    assert proxy.error is not None
+    with pytest.raises(RuntimeError, match="Cannot connect"):
+        proxy.start_new_game(GameMode.LONG)

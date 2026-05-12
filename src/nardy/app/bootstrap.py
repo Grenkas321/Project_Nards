@@ -42,14 +42,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--socket-host",
-        default=DEFAULT_HOST,
-        help="Socket match host (default: 127.0.0.1).",
+        default=None,
+        help="Socket match host (default: 127.0.0.1 for client, 0.0.0.0 for server).",
     )
     parser.add_argument(
         "--socket-port",
         type=int,
         default=DEFAULT_PORT,
-        help="Socket match port (default: 8765).",
+        help=f"Socket match port (default: {DEFAULT_PORT}).",
     )
     return parser
 
@@ -58,7 +58,7 @@ def build_application(
     locale_code: str = "en",
     server_mode: bool = False,
     join_mode: bool = False,
-    socket_host: str = DEFAULT_HOST,
+    socket_host: str | None = None,
     socket_port: int = DEFAULT_PORT,
 ) -> AppController:
     """Create the default application controller and its dependencies."""
@@ -72,10 +72,19 @@ def build_application(
 
     shell = ApplicationShell()
     localizer = Localizer(locale_code=locale_code)
+
+    # Determine effective socket host
+    if server_mode and socket_host is None:
+        effective_host = "0.0.0.0"
+    elif not server_mode and socket_host is None:
+        effective_host = DEFAULT_HOST
+    else:
+        effective_host = socket_host
+
     if server_mode:
-        server = MatchServer(host=socket_host, port=socket_port)
+        server = MatchServer(host=effective_host, port=socket_port)
         server.start_in_background()
-        engine = RemoteEngineProxy(host=socket_host, port=socket_port)
+        engine = RemoteEngineProxy(host=DEFAULT_HOST, port=socket_port)  # client connects to localhost
         return AppController(
             shell=shell,
             engine=engine,
@@ -84,7 +93,8 @@ def build_application(
             state_waiter=engine.wait_for_update,
         )
     if join_mode:
-        engine = RemoteEngineProxy(host=socket_host, port=socket_port)
+        engine = RemoteEngineProxy(host=effective_host, port=socket_port)
+        # If connection failed, engine.error will be set and methods will raise
         return AppController(
             shell=shell,
             engine=engine,
@@ -101,12 +111,16 @@ def main(argv: list[str] | None = None) -> int:
     """Console entry point used by the project script."""
     parser = build_parser()
     args = parser.parse_args(argv)
-    application = build_application(
-        locale_code=args.locale,
-        server_mode=args.server,
-        join_mode=args.join,
-        socket_host=args.socket_host,
-        socket_port=args.socket_port,
-    )
+    try:
+        application = build_application(
+            locale_code=args.locale,
+            server_mode=args.server,
+            join_mode=args.join,
+            socket_host=args.socket_host,
+            socket_port=args.socket_port,
+        )
+    except RuntimeError as e:
+        print(f"Error: {e}")
+        return 1
     application.run()
     return 0
