@@ -224,7 +224,7 @@ python -m doit docs
 Собрать пакет:
 
 ```bash
-python -m build
+python -m doit build
 ```
 
 Подробности по архитектуре, тестам, локализации и workflow находятся в папке `docs/`.

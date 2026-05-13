@@ -45,7 +45,10 @@ include-package-data = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-"nardy.i18n" = ["locale/messages.pot", "locale/**/*.po", "locale/**/*.mo"]
+"nardy.i18n" = ["locale/**/*.po", "locale/**/*.mo"]
+
+[tool.setuptools.exclude-package-data]
+"nardy.i18n" = ["locale/messages.pot"]
 
 [tool.pydocstyle]
 convention = "pep257"
@@ -60,10 +63,14 @@ testpaths = ["tests"]
 [tool.coverage.run]
 branch = true
 source = ["nardy"]
+omit = [
+  "src/nardy/ui/*",
+]
 
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
+fail_under = 75
 
 [tool.coverage.html]
 directory = "htmlcov"

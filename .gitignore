@@ -14,6 +14,10 @@ dist/
 *.egg-info/
 *.egg
 
+# Generated localization artifacts
+src/nardy/i18n/locale/messages.pot
+src/nardy/i18n/locale/*/LC_MESSAGES/*.mo
+
 # Testing
 .coverage
 coverage.xml
