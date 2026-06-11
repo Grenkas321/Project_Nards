@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nardy 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-22 01:21+0300\n"
+"POT-Creation-Date: 2026-06-10 20:43+0300\n"
 "PO-Revision-Date: 2026-04-20 00:00+0000\n"
 "Last-Translator: Nardy Team\n"
 "Language: en\n"
@@ -52,11 +52,11 @@ msgstr "Long backgammon"
 msgid "Short backgammon"
 msgstr "Short backgammon"
 
-#: src/nardy/app/presentation.py:72 src/nardy/ui/game_screen.py:322
+#: src/nardy/app/presentation.py:72 src/nardy/ui/game_screen.py:472
 msgid "White"
 msgstr "White"
 
-#: src/nardy/app/presentation.py:74 src/nardy/ui/game_screen.py:324
+#: src/nardy/app/presentation.py:74 src/nardy/ui/game_screen.py:472
 msgid "Black"
 msgstr "Black"
 
@@ -79,15 +79,15 @@ msgstr ""
 msgid "{player}: turn finished."
 msgstr "{player} wins."
 
-#: src/nardy/ui/game_screen.py:105
+#: src/nardy/ui/game_screen.py:125
 msgid "Roll dice"
 msgstr "Roll dice"
 
-#: src/nardy/ui/game_screen.py:111
+#: src/nardy/ui/game_screen.py:132
 msgid "Undo"
 msgstr "Undo"
 
-#: src/nardy/ui/game_screen.py:117 src/nardy/ui/victory_screen.py:44
+#: src/nardy/ui/game_screen.py:138 src/nardy/ui/victory_screen.py:44
 msgid "Back to menu"
 msgstr "Back to menu"
 
