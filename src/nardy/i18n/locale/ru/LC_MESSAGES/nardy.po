@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nardy 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-12 13:35+0300\n"
+"POT-Creation-Date: 2026-06-12 15:16+0300\n"
 "PO-Revision-Date: 2026-04-20 00:00+0000\n"
 "Last-Translator: Nardy Team\n"
 "Language: ru\n"
@@ -53,11 +53,11 @@ msgstr "Длинные нарды"
 msgid "Short backgammon"
 msgstr "Короткие нарды"
 
-#: src/nardy/app/presentation.py:73 src/nardy/ui/game_screen.py:362
+#: src/nardy/app/presentation.py:73 src/nardy/ui/game_screen.py:367
 msgid "White"
 msgstr "Белые"
 
-#: src/nardy/app/presentation.py:75 src/nardy/ui/game_screen.py:362
+#: src/nardy/app/presentation.py:75 src/nardy/ui/game_screen.py:367
 msgid "Black"
 msgstr "Чёрные"
 
@@ -80,15 +80,15 @@ msgstr "{player}: выберите подсвеченную фишку."
 msgid "{player}: turn finished."
 msgstr "{player}: ход завершён."
 
-#: src/nardy/ui/game_screen.py:124
+#: src/nardy/ui/game_screen.py:126
 msgid "Roll dice"
 msgstr "Бросить кости"
 
-#: src/nardy/ui/game_screen.py:130
+#: src/nardy/ui/game_screen.py:132
 msgid "Undo"
 msgstr "Отменить ход"
 
-#: src/nardy/ui/game_screen.py:135 src/nardy/ui/victory_screen.py:44
+#: src/nardy/ui/game_screen.py:137 src/nardy/ui/victory_screen.py:44
 msgid "Back to menu"
 msgstr "Назад в меню"
 

@@ -6,7 +6,6 @@ import random
 import tkinter as tk
 from collections import defaultdict
 from collections.abc import Callable
-from functools import partial
 from tkinter import ttk
 
 from nardy.app.presentation import GameScreenData
@@ -102,6 +101,9 @@ class GameScreen(ttk.Frame):
         self._canvas.grid(row=0, column=0, sticky="nsew")
         self._canvas.bind("<Configure>", self._on_resize)
 
+        # Привязываем события один раз (не при каждой перерисовке)
+        self._bind_events()
+
         # Dice display area
         self._dice_canvas = tk.Canvas(
             header,
@@ -146,6 +148,14 @@ class GameScreen(ttk.Frame):
         if last_move is not None:
             self.after(20, lambda: self._animate_move(last_move))
 
+    def _bind_events(self) -> None:
+        """Bind click events to canvas tags once (to avoid duplication on resize)."""
+        for point in range(1, 25):
+            self._canvas.tag_bind(f"point_{point}", "<Button-1>", lambda e, p=point: self._on_point_click(p))
+        self._canvas.tag_bind("bar_zone", "<Button-1>", lambda e: self._on_point_click(BAR_POSITION))
+        self._canvas.tag_bind("off_top", "<Button-1>", lambda e: self._on_point_click(OFF_POSITION))
+        self._canvas.tag_bind("off_bottom", "<Button-1>", lambda e: self._on_point_click(OFF_POSITION))
+
     def _update_roll_button_state(self, can_roll: bool) -> None:
         if not self._destroyed:
             try:
@@ -168,7 +178,6 @@ class GameScreen(ttk.Frame):
         result = defaultdict(set)
         remaining_pips = list(self._state.turn.remaining_pips)
 
-        # BFS over (state, current_pos, remaining_pips)
         from collections import deque
 
         for source in self._moves_by_source.keys():
@@ -241,12 +250,14 @@ class GameScreen(ttk.Frame):
         return (x1, half_height + 6 * sy, x2, h - 24 * sy)
 
     def _on_resize(self, event: tk.Event) -> None:
+        # При изменении размера перерисовываем только графику, привязки не трогаем
         self._draw_board()
         self._draw_checkers()
         self._draw_highlights()
 
     # ---------- Drawing ----------
     def _draw_board(self) -> None:
+        """Draw board geometry (rectangles, text) without re-binding events."""
         self._canvas.delete("board")
         scale = self._get_scaled_coords()
         w, h = scale["width"], scale["height"]
@@ -263,23 +274,17 @@ class GameScreen(ttk.Frame):
             fill = "#e7d0ab" if (point % 2 == 0) else "#dbbc87"
             self._canvas.create_rectangle(x1, y1, x2, y2, fill=fill, outline="#7b6247", width=2, tags=("board", f"point_{point}"))
             self._canvas.create_rectangle(x1 + 2, y1 + 2, x2 - 2, y2 - 2, fill="", outline="#cbaa77", width=1, tags=("board",))
-            # point number
             text_y = y1 - 10 * sy if point >= 13 else y2 + 10 * sy
             self._canvas.create_text((x1 + x2) / 2, text_y, text=str(point), fill="#3e3024", font=("Segoe UI", int(9 * sy), "bold"), tags=("board",))
-            # Используем partial для передачи аргумента
-            self._canvas.tag_bind(f"point_{point}", "<Button-1>", partial(self._on_point_click, point))
 
         if self._state.mode is GameMode.SHORT:
             bar = self._bar_zone_rect(scale)
             self._canvas.create_rectangle(bar[0], bar[1], bar[2], bar[3], fill="#cdb089", outline="#6b5137", width=2, tags=("board", "bar_zone"))
-            self._canvas.tag_bind("bar_zone", "<Button-1>", partial(self._on_point_click, BAR_POSITION))
 
         top_off = self._off_zone_rect(scale, top=True)
         bottom_off = self._off_zone_rect(scale, top=False)
         for zone, label in ((top_off, "off_top"), (bottom_off, "off_bottom")):
             self._canvas.create_rectangle(*zone, fill="#d9c3a0", outline="#6b5137", width=2, tags=("board", label))
-        self._canvas.tag_bind("off_top", "<Button-1>", partial(self._on_point_click, OFF_POSITION))
-        self._canvas.tag_bind("off_bottom", "<Button-1>", partial(self._on_point_click, OFF_POSITION))
 
     def _draw_checkers(self) -> None:
         self._canvas.delete("checker")
@@ -469,8 +474,7 @@ class GameScreen(ttk.Frame):
         self.after(300, self._process_next_in_sequence)
 
     # ---------- Click handling ----------
-    def _on_point_click(self, point: int, event: tk.Event | None = None) -> None:
-        """Handle click on a point (event is ignored, only point matters)."""
+    def _on_point_click(self, point: int) -> None:
         if not self._moves_by_source:
             return
         if self._selected_source is None:
