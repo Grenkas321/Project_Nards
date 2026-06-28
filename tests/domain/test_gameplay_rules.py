@@ -411,6 +411,8 @@ def _ready_state(
     player: Player,
     layout: dict[int, tuple[Player, int]],
     remaining_pips: tuple[int, ...],
+    turn_number: int = 1,
+    head_moves_this_turn: int = 0,
 ) -> GameState:
     """Create a state in READY_TO_MOVE phase for deterministic tests."""
     return GameState(
@@ -422,7 +424,9 @@ def _ready_state(
             phase=TurnPhase.READY_TO_MOVE,
             dice=DiceRoll.from_values(remaining_pips[0], remaining_pips[-1]),
             remaining_pips=remaining_pips,
+            head_moves_this_turn=head_moves_this_turn,
         ),
+        turn_number=turn_number,
     )
 
 
@@ -447,3 +451,241 @@ class MoveTarget(tuple):
 def _move_targets(moves) -> set[MoveTarget]:
     """Return source-target pairs for moves."""
     return {MoveTarget(move.source, move.target) for move in moves}
+
+
+# ---------- Head rule tests ----------
+
+
+def test_long_head_rule_only_one_checker_leaves_head() -> None:
+    """After one head departure, the head should be excluded from sources."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(1, 2),
+        turn_number=3,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 not in legal_sources
+
+
+def test_long_head_rule_allows_one_from_head() -> None:
+    """Before any head departure, the head should be a legal source."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(1, 2),
+        turn_number=3,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 in legal_sources
+
+
+def test_long_head_rule_first_turn_doubles_66_allows_two() -> None:
+    """On first turn with 6-6, two checkers may leave head."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(6, 6, 6, 6),
+        turn_number=1,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 in legal_sources
+
+
+def test_long_head_rule_first_turn_doubles_44_allows_two() -> None:
+    """On first turn with 4-4, two checkers may leave head."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(4, 4, 4, 4),
+        turn_number=1,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 in legal_sources
+
+
+def test_long_head_rule_first_turn_doubles_33_allows_two() -> None:
+    """On first turn with 3-3, two checkers may leave head."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(3, 3, 3, 3),
+        turn_number=1,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 in legal_sources
+
+
+def test_long_head_rule_first_turn_doubles_11_allows_two() -> None:
+    """On first turn with any double, two checkers may leave head."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(1, 1, 1, 1),
+        turn_number=1,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 in legal_sources
+
+
+def test_long_head_rule_non_first_turn_doubles_66_limits_to_one() -> None:
+    """After the first turn, 6-6 should still limit to 1 head departure."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={24: (Player.WHITE, 15)},
+        remaining_pips=(6, 6, 6, 6),
+        turn_number=5,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 24 not in legal_sources
+
+
+def test_long_head_rule_black_first_turn_doubles_exception() -> None:
+    """Black's first turn (turn_number=2) with 4-4 allows 2 head departures."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.BLACK,
+        layout={12: (Player.BLACK, 15)},
+        remaining_pips=(4, 4, 4, 4),
+        turn_number=2,
+        head_moves_this_turn=1,
+    )
+
+    legal_sources = {move.source for move in rules.legal_moves(state)}
+    assert 12 in legal_sources
+
+
+def test_long_head_rule_tracked_through_engine() -> None:
+    """Engine should track head departures and enforce the limit."""
+    engine = GameEngine(
+        {
+            GameMode.LONG: LongNardyRules(randint=_sequence_randint([1, 2])),
+            GameMode.SHORT: ShortNardyRules(),
+        }
+    )
+    engine.start_new_game(GameMode.LONG)
+    state = engine.roll_dice()
+
+    first_move = next(m for m in engine.available_moves() if m.source == 24)
+    state = engine.apply_move(first_move)
+
+    head_sources = {m.source for m in engine.available_moves() if m.source == 24}
+    assert not head_sources
+
+
+# ---------- Six-in-a-row blocking rule tests ----------
+
+
+def test_long_six_consecutive_block_forbidden() -> None:
+    """Creating 6 consecutive points blocking opponent path is forbidden."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={
+            23: (Player.WHITE, 2),
+            22: (Player.WHITE, 1),
+            21: (Player.WHITE, 1),
+            20: (Player.WHITE, 1),
+            19: (Player.WHITE, 1),
+            12: (Player.BLACK, 15),
+        },
+        remaining_pips=(5,),
+        turn_number=5,
+    )
+
+    legal_targets = {move.target for move in rules.legal_moves(state)}
+    assert 18 not in legal_targets
+
+
+def test_long_five_consecutive_is_allowed() -> None:
+    """Building 5 consecutive is fine."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={
+            24: (Player.WHITE, 1),
+            23: (Player.WHITE, 1),
+            22: (Player.WHITE, 1),
+            21: (Player.WHITE, 1),
+            12: (Player.BLACK, 15),
+        },
+        remaining_pips=(4,),
+        turn_number=5,
+    )
+
+    legal_targets = {move.target for move in rules.legal_moves(state)}
+    assert 20 in legal_targets
+
+
+def test_long_six_consecutive_allowed_when_all_opponent_in_prime() -> None:
+    """6-block is allowed when all opponent checkers form a contiguous group."""
+    rules = LongNardyRules()
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={
+            24: (Player.WHITE, 1),
+            23: (Player.WHITE, 1),
+            22: (Player.WHITE, 1),
+            21: (Player.WHITE, 1),
+            20: (Player.WHITE, 1),
+            10: (Player.BLACK, 8),
+            9: (Player.BLACK, 7),
+        },
+        remaining_pips=(5,),
+        turn_number=5,
+    )
+
+    legal_targets = {move.target for move in rules.legal_moves(state)}
+    assert 19 in legal_targets
+
+
+def test_long_blocking_rule_does_not_affect_short_nardy() -> None:
+    """Short nardy should not have the 6-in-a-row restriction."""
+    rules = ShortNardyRules()
+    state = _ready_state(
+        mode=GameMode.SHORT,
+        player=Player.WHITE,
+        layout={
+            24: (Player.WHITE, 1),
+            23: (Player.WHITE, 1),
+            22: (Player.WHITE, 1),
+            21: (Player.WHITE, 1),
+            20: (Player.WHITE, 1),
+            1: (Player.BLACK, 15),
+        },
+        remaining_pips=(5,),
+    )
+
+    legal_targets = {move.target for move in rules.legal_moves(state)}
+    assert 19 in legal_targets

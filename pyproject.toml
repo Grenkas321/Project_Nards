@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Games/Entertainment :: Board Games",
 ]
-dependencies = []
+dependencies = ["Pillow>=10.0"]
 
 [project.optional-dependencies]
 dev = [
@@ -46,6 +46,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "nardy.i18n" = ["locale/**/*.po", "locale/**/*.mo"]
+"nardy.ui" = ["assets/*.wav"]
 
 [tool.setuptools.exclude-package-data]
 "nardy.i18n" = ["locale/messages.pot"]

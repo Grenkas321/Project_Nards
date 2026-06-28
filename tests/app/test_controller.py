@@ -65,6 +65,11 @@ class DummyGameScreen:
         """Store positional and keyword arguments."""
         self.args = args
         self.kwargs = kwargs
+        self._destroyed = False
+
+    def update_state(self, **kwargs) -> None:
+        """Capture update calls."""
+        self.kwargs.update(kwargs)
 
 
 def test_controller_disables_roll_when_controlled_player_is_waiting(

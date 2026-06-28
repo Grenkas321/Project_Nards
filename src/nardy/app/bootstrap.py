@@ -21,8 +21,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--locale",
-        choices=("en", "ru"),
-        default="en",
+        choices=("ru", "en", "hy"),
+        default="ru",
         help="Set the UI locale for the current session.",
     )
     parser.add_argument(

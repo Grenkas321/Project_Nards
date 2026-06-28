@@ -19,6 +19,7 @@ class GameScreenData:
     dice: str
     can_roll: bool
     can_undo: bool
+    can_undo_move: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,6 +34,7 @@ def present_game_state(
     localizer: Localizer,
     state: GameState,
     can_undo: bool,
+    can_undo_move: bool = False,
     status_override: str | None = None,
 ) -> GameScreenData:
     """Convert a domain state into UI-friendly strings."""
@@ -47,6 +49,7 @@ def present_game_state(
         dice=f"{translate(_('Dice'))}: {_dice_text(state)}",
         can_roll=state.turn.phase is TurnPhase.WAITING_FOR_ROLL,
         can_undo=can_undo,
+        can_undo_move=can_undo_move,
     )
 
 

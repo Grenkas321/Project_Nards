@@ -23,6 +23,7 @@ class GameEngine:
         self._turn_start_snapshot: GameState | None = None
         self._undo_snapshot: GameState | None = None
         self._undo_player: Player | None = None
+        self._move_stack: list[GameState] = []
 
     @property
     def state(self) -> GameState:
@@ -35,11 +36,13 @@ class GameEngine:
         self._turn_start_snapshot = None
         self._undo_snapshot = None
         self._undo_player = None
+        self._move_stack.clear()
         self._state = self._refresh_turn_state(rules.initial_state())
         return self._state
 
     def roll_dice(self) -> GameState:
         """Start the active turn by rolling two dice."""
+        self._move_stack.clear()
         state = self._require_state()
         if (
             self._undo_player is state.current_player.opponent
@@ -63,11 +66,14 @@ class GameEngine:
     def apply_move(self, move: Move) -> GameState:
         """Apply a legal move and refresh the move list."""
         state = self._require_state()
+        self._move_stack.append(state)
         rules = self._rules(state.mode)
         next_state = self._refresh_turn_state(rules.apply_move(state, move))
         if next_state.turn.phase is TurnPhase.TURN_COMPLETE:
             self._state = next_state
-            return self.end_turn()
+            result = self.end_turn()
+            self._move_stack.clear()
+            return result
         self._state = next_state
         return next_state
 
@@ -98,6 +104,17 @@ class GameEngine:
         self._undo_player = None
         self._turn_start_snapshot = None
         return self._state
+
+    def undo_last_move(self) -> GameState:
+        """Undo the last move within the current turn."""
+        if not self._move_stack:
+            raise UndoUnavailableError("No moves to undo.")
+        self._state = self._refresh_turn_state(self._move_stack.pop())
+        return self._state
+
+    def can_undo_last_move(self) -> bool:
+        """Return True when intra-turn undo is available."""
+        return bool(self._move_stack)
 
     def can_undo(self, player: Player) -> bool:
         """Return ``True`` when undo is available."""

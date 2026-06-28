@@ -419,6 +419,7 @@ def _state_to_wire(state: GameState) -> dict[str, Any]:
             "remaining_pips": list(state.turn.remaining_pips),
             "legal_moves": [_move_to_wire(move) for move in state.turn.legal_moves],
             "moves": [_move_to_wire(move) for move in state.turn.moves],
+            "head_moves_this_turn": state.turn.head_moves_this_turn,
         },
         "bar": list(state.bar),
         "borne_off": list(state.borne_off),
@@ -462,6 +463,9 @@ def _state_from_wire(payload: dict[str, Any]) -> GameState:
             ),
             legal_moves=legal_moves,
             moves=moves,
+            head_moves_this_turn=int(
+                payload["turn"].get("head_moves_this_turn", 0)
+            ),
         ),
         bar=(int(payload["bar"][0]), int(payload["bar"][1])),
         borne_off=(int(payload["borne_off"][0]), int(payload["borne_off"][1])),

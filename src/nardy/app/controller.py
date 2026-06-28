@@ -39,6 +39,8 @@ class AppController:
         self._state_poller = state_poller
         self._state_waiter = state_waiter
         self._current_screen: ScreenName = "menu"
+        self._game_screen: GameScreen | None = None
+        self._last_displayed_state: GameState | None = None
         self._status_message: str | None = None
         self._last_move: Move | None = None
         self._poll_job: str | None = None
@@ -77,6 +79,14 @@ class AppController:
             return
         self._last_move = None
         self._perform_game_action(lambda: self._engine.undo(requester))
+
+    def undo_move(self) -> None:
+        """Undo the last move within the current turn."""
+        can_undo = getattr(self._engine, "can_undo_last_move", None)
+        if can_undo is None or not can_undo():
+            return
+        self._last_move = None
+        self._perform_game_action(self._engine.undo_last_move)
 
     def apply_move(self, move: Move) -> None:
         """Apply a move selected on the game board."""
@@ -197,6 +207,8 @@ class AppController:
         """Create and display the main menu screen."""
         translate = self._localizer.gettext
         self._current_screen = "menu"
+        self._game_screen = None
+        self._last_displayed_state = None
         self._shell.set_title(translate(_("Nardy")))
         self._shell.show(
             MainMenuScreen(
@@ -210,7 +222,7 @@ class AppController:
         )
 
     def _show_game(self, state: GameState) -> None:
-        """Create and display the game screen."""
+        """Update existing game screen or create a new one."""
         displayed_state = state
         status_override = self._status_message
         player_locked = False
@@ -225,10 +237,13 @@ class AppController:
             )
             if status_override is None:
                 status_override = self._localizer.gettext(_("Waiting for opponent."))
+        can_undo_move_fn = getattr(self._engine, "can_undo_last_move", None)
+        can_undo_move = bool(can_undo_move_fn and can_undo_move_fn())
         screen_data = present_game_state(
             self._localizer,
             state=displayed_state,
             can_undo=self._engine.can_undo(state.current_player.opponent),
+            can_undo_move=can_undo_move,
             status_override=status_override,
         )
         if player_locked:
@@ -237,26 +252,51 @@ class AppController:
                 can_roll=False,
                 can_undo=screen_data.can_undo,
             )
-        self._current_screen = "game"
-        self._shell.set_title(self._localizer.gettext(_("Nardy")))
-        self._shell.show(
-            GameScreen(
-                master=self._shell.root,
-                localizer=self._localizer,
+
+        if (
+            displayed_state == self._last_displayed_state
+            and self._last_move is None
+            and self._current_screen == "game"
+        ):
+            return
+        self._last_displayed_state = displayed_state
+
+        if (
+            self._current_screen == "game"
+            and self._game_screen is not None
+            and not self._game_screen._destroyed
+        ):
+            self._game_screen.update_state(
                 data=screen_data,
                 state=displayed_state,
                 last_move=self._last_move,
-                on_roll_dice=self.roll_dice,
-                on_apply_move=self.apply_move,
-                on_undo=self.undo,
-                on_back_to_menu=self.back_to_menu,
+                can_roll=screen_data.can_roll,
             )
+            self._last_move = None
+            return
+
+        self._current_screen = "game"
+        self._shell.set_title(self._localizer.gettext(_("Nardy")))
+        self._game_screen = GameScreen(
+            master=self._shell.root,
+            localizer=self._localizer,
+            data=screen_data,
+            state=displayed_state,
+            last_move=self._last_move,
+            on_roll_dice=self.roll_dice,
+            on_apply_move=self.apply_move,
+            on_undo=self.undo,
+            on_undo_move=self.undo_move,
+            on_back_to_menu=self.back_to_menu,
         )
+        self._shell.show(self._game_screen)
         self._last_move = None
 
     def _show_victory(self, state: GameState) -> None:
         """Create and display the victory screen."""
         self._current_screen = "victory"
+        self._game_screen = None
+        self._last_displayed_state = None
         self._shell.set_title(self._localizer.gettext(_("Victory")))
         self._shell.show(
             VictoryScreen(

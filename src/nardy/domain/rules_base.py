@@ -107,6 +107,8 @@ class BaseRuleset(Ruleset):
         self.validate_move(state, move)
         next_state = self._relocate_checker(state, move)
         next_turn = next_state.turn.record_move(move)
+        if self.is_head_departure(move):
+            next_turn = next_turn.record_head_move()
         candidate = replace(next_state, turn=next_turn)
         return replace(candidate, winner=self.winner(candidate))
 
@@ -136,6 +138,20 @@ class BaseRuleset(Ruleset):
             raise RuleViolationError(
                 "The move is not legal in the current position."
             )
+
+    def is_head_departure(self, move: Move) -> bool:
+        """Return True if this move leaves a head point. Default: False."""
+        return False
+
+    def post_validate_landing(
+        self,
+        state: GameState,
+        player: Player,
+        source: int,
+        target: int,
+    ) -> bool:
+        """Additional validation after can_land_on_point. Default: True."""
+        return True
 
     def starting_player(self) -> Player:
         """Return the player who begins a new match."""

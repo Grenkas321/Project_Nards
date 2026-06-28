@@ -138,6 +138,7 @@ class TurnState:
     remaining_pips: tuple[int, ...] = ()
     legal_moves: tuple[Move, ...] = ()
     moves: tuple[Move, ...] = ()
+    head_moves_this_turn: int = 0
 
     def with_roll(self, dice: DiceRoll) -> TurnState:
         """Start a new move phase from a fresh dice roll."""
@@ -173,6 +174,10 @@ class TurnState:
             legal_moves=(),
             moves=self.moves + (move,),
         )
+
+    def record_head_move(self) -> TurnState:
+        """Increment the head departure counter."""
+        return replace(self, head_moves_this_turn=self.head_moves_this_turn + 1)
 
     def finish(self) -> TurnState:
         """Mark the turn as complete when no more moves can be made."""

@@ -1,0 +1,119 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: nardy 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-12 14:21+0300\n"
+"PO-Revision-Date: 2026-06-28 00:00+0000\n"
+"Last-Translator: Nardy Team\n"
+"Language: hy\n"
+"Language-Team: Armenian\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Undo is unavailable."
+msgstr "Հետարկումը անհասանելի է։"
+
+msgid "Nardy"
+msgstr "Նարդի"
+
+msgid "Waiting for opponent."
+msgstr "Սպասում ենք մրցակիցին։"
+
+msgid "Victory"
+msgstr "Հաղթանակ"
+
+msgid "Mode"
+msgstr "Ռեժիմ"
+
+msgid "Dice"
+msgstr "Զառեր"
+
+msgid "{player} wins."
+msgstr "{player}ը հաղթել է։"
+
+msgid "Long backgammon"
+msgstr "Երկար նարդի"
+
+msgid "Short backgammon"
+msgstr "Կարճ նարդի"
+
+msgid "White"
+msgstr "Սպիտակ"
+
+msgid "Black"
+msgstr "Սև"
+
+msgid "Unknown player"
+msgstr "Անհայտ խաղացող"
+
+msgid "{player}: roll dice."
+msgstr "{player}. գցեք զառերը։"
+
+msgid "{player}: choose a highlighted checker."
+msgstr "{player}. ընտրեք լուսավորված խաղաքարը։"
+
+msgid "{player}: turn finished."
+msgstr "{player}. քայլը ավարտվեց։"
+
+msgid "Roll dice"
+msgstr "Գցել զառերը"
+
+msgid "Undo"
+msgstr "Հետարկել"
+
+msgid "Back to menu"
+msgstr "Վերադառնալ"
+
+msgid "Choose a mode"
+msgstr "Ընտրեք ռեժիմը"
+
+msgid "LAN Game"
+msgstr "LAN խաղ"
+
+msgid "Host Game"
+msgstr "Ստեղծել խաղ"
+
+msgid "Join Game"
+msgstr "Միանալ խաղին"
+
+msgid "Language"
+msgstr "Լեզու"
+
+msgid "English"
+msgstr "Անգլերեն"
+
+msgid "Russian"
+msgstr "Ռուսերեն"
+
+msgid "Armenian"
+msgstr "Հայերեն"
+
+msgid "Exit"
+msgstr "Ելք"
+
+msgid "Host LAN Game"
+msgstr "Ստեղծել LAN խաղ"
+
+msgid "Port:"
+msgstr "Պորտ."
+
+msgid "Host"
+msgstr "Ստեղծել"
+
+msgid "Join LAN Game"
+msgstr "Միանալ LAN խաղին"
+
+msgid "Host IP:"
+msgstr "IP հասցե."
+
+msgid "Join"
+msgstr "Միանալ"
+
+msgid "Bone"
+msgstr " Delays"
+
+msgid "Wood"
+msgstr "Delays"

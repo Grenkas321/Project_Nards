@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from dataclasses import replace
 from functools import lru_cache
 
 from nardy.domain.models import (
     BAR_POSITION,
     BOARD_POINT_COUNT,
     OFF_POSITION,
+    GameMode,
     GameState,
     Move,
     Player,
@@ -66,6 +68,11 @@ class MoveGenerator:
                         branch_state,
                         move,
                     )
+                    if self._ruleset.is_head_departure(move):
+                        next_state = replace(
+                            next_state,
+                            turn=next_state.turn.record_head_move(),
+                        )
                     tails = _walk(next_state, next_pips)
                     if not tails:
                         sequences.append((move,))
@@ -102,6 +109,10 @@ class MoveGenerator:
                     target,
                 ):
                     continue
+                if not self._ruleset.post_validate_landing(
+                    state, player, point_number, target,
+                ):
+                    continue
                 target_point = state.point(target)
                 candidates.append(
                     Move(
@@ -131,6 +142,24 @@ class MoveGenerator:
                         bears_off=True,
                     )
                 )
+        return self._filter_head_moves(state, player, candidates)
+
+    def _filter_head_moves(
+        self,
+        state: GameState,
+        player: Player,
+        candidates: list[Move],
+    ) -> tuple[Move, ...]:
+        """Remove head-point moves when the per-turn limit is reached."""
+        if state.mode is not GameMode.LONG:
+            return tuple(candidates)
+        from nardy.domain.rules_long import LongNardyRules
+        if not isinstance(self._ruleset, LongNardyRules):
+            return tuple(candidates)
+        head_pt = self._ruleset.head_point_for(player)
+        max_dep = self._ruleset.max_head_departures(state)
+        if state.turn.head_moves_this_turn >= max_dep:
+            return tuple(m for m in candidates if m.source != head_pt)
         return tuple(candidates)
 
     def _bar_reentry_moves(
@@ -145,6 +174,10 @@ class MoveGenerator:
         else:
             target = die_value
         if not self._ruleset.can_land_on_point(state, player, target):
+            return ()
+        if not self._ruleset.post_validate_landing(
+            state, player, BAR_POSITION, target,
+        ):
             return ()
         target_point = state.point(target)
         return (
