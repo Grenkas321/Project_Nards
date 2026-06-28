@@ -7,7 +7,6 @@ import random
 import tkinter as tk
 from collections import defaultdict, deque
 from collections.abc import Callable
-from functools import partial
 from tkinter import ttk
 
 from nardy.app.presentation import GameScreenData
@@ -22,10 +21,10 @@ from nardy.domain.models import (
 from nardy.i18n import Localizer, gettext_noop as N_
 from nardy.domain.rules_long import LongNardyRules
 from nardy.domain.rules_short import ShortNardyRules
-from nardy.ui.sounds import play_checker_place, play_dice_hit, play_dice_land, play_dice_roll
+from nardy.ui.sounds import play_checker_place, play_dice_roll
 from nardy.ui.textures import (
     checker_photo, shadow_photo, die_photo,
-    light_wood, dark_wood, bark_texture, board_surface,
+    bark_texture, board_surface,
     triangle_image, center_ornament,
 )
 from PIL import ImageTk
@@ -424,7 +423,7 @@ class GameScreen(ttk.Frame):
 
     def _build_board_bg(self, w: int, h: int, bw: float, pw: float, cl: float) -> None:
         """Compose board: bark frame, playing surface, dark border between."""
-        from PIL import Image, ImageDraw as IDraw
+        from PIL import ImageDraw as IDraw
         board = bark_texture(w, h)
         ibw = int(bw)
         field_right = int(bw + 12 * pw + cl)
@@ -703,7 +702,7 @@ class GameScreen(ttk.Frame):
             grn = int(28 + t * 28)
             blu = int(22 + t * 22)
             c.create_oval(cx - cr, cy - cr, cx + cr, cy + cr,
-                          fill=f"#{min(255,red):02x}{grn:02x}{blu:02x}",
+                          fill=f"#{min(255, red):02x}{grn:02x}{blu:02x}",
                           outline="", tags=("rollbtn",))
         # Rim
         c.create_oval(cx - r, cy - r, cx + r, cy + r,
