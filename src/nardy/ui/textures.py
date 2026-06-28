@@ -34,6 +34,7 @@ _theme_change_counter: int = 0
 
 
 def set_theme(name: str) -> None:
+    """Switch the active board color theme."""
     global _current_theme, _theme_change_counter
     if name in THEMES:
         _current_theme = name
@@ -44,6 +45,7 @@ def set_theme(name: str) -> None:
 
 
 def get_theme() -> str:
+    """Return the current theme name."""
     return _current_theme
 
 
@@ -62,6 +64,7 @@ def _load_asset(name: str) -> Image.Image | None:
 
 @lru_cache(maxsize=32)
 def checker_photo(diameter: int, is_white: bool) -> ImageTk.PhotoImage:
+    """Return a cached PhotoImage of a checker."""
     return ImageTk.PhotoImage(_checker_image(diameter, is_white))
 
 
@@ -130,6 +133,7 @@ def _checker_image(diameter: int, is_white: bool) -> Image.Image:
 
 @lru_cache(maxsize=16)
 def shadow_photo(diameter: int) -> ImageTk.PhotoImage:
+    """Return a soft circular shadow image."""
     big = diameter * SUPERSAMPLE
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -152,6 +156,7 @@ def shadow_photo(diameter: int) -> ImageTk.PhotoImage:
 
 @lru_cache(maxsize=12)
 def die_photo(size: int, value: int) -> ImageTk.PhotoImage:
+    """Return a cached PhotoImage of a die face."""
     return ImageTk.PhotoImage(_die_image(size, value))
 
 

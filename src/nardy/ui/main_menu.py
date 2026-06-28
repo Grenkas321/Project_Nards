@@ -30,6 +30,7 @@ class MainMenuScreen(ttk.Frame):
         on_set_locale: Callable[[str], None],
         on_exit: Callable[[], None],
     ) -> None:
+        """Create the menu widgets and wire callbacks."""
         super().__init__(master)
         translate = localizer.gettext
 
