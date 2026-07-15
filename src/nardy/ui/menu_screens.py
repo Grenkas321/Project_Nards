@@ -66,12 +66,18 @@ class _BaseMenuScreen:
         self._buttons: list[Button] = []
         self._bg: pygame.Surface | None = None
         self._bg_size: tuple[int, int] = (0, 0)
-        self._layout_done = False
+        self._layout_size: tuple[int, int] | None = None
 
     def _ensure_bg(self, size: tuple[int, int]) -> None:
         if size != self._bg_size:
             self._bg_size = size
             self._bg = _random_bg(*size)
+
+    def _maybe_layout(self, size: tuple[int, int]) -> None:
+        """Re-run layout whenever the window size changes (resize/maximize)."""
+        if size != self._layout_size:
+            self._layout_size = size
+            self.layout(size)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """Forward events to all buttons."""
@@ -89,9 +95,7 @@ class _BaseMenuScreen:
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
         for btn in self._buttons:
             btn.draw(surface)
 
@@ -464,9 +468,7 @@ class TitleScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         self._draw_log(surface, size)
 
@@ -547,9 +549,7 @@ class PlayModeScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         w, h = size
         card = pygame.Rect(0, 0, min(520, int(w * 0.55)), int(h * 0.76))
@@ -634,9 +634,7 @@ class AIMenuScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         w, h = size
         card = pygame.Rect(0, 0, min(560, int(w * 0.6)), int(h * 0.86))
@@ -692,9 +690,7 @@ class LocalMenuScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         w, h = size
         card = pygame.Rect(0, 0, min(480, int(w * 0.5)), int(h * 0.66))
@@ -776,9 +772,7 @@ class NetworkMenuScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         t = self._translate
         w, h = size
@@ -1071,9 +1065,7 @@ class RulesScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill(BG_DARK)
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         self._draw_title(surface, self._translate(_("Rules")), rely=0.02, size=26)
         self._panel.draw(surface)

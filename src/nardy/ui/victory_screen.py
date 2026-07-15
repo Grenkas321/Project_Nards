@@ -68,9 +68,7 @@ class VictoryScreen(_BaseMenuScreen):
             surface.blit(self._bg, (0, 0))
         else:
             surface.fill((26, 15, 8))
-        if not self._layout_done:
-            self.layout(size)
-            self._layout_done = True
+        self._maybe_layout(size)
 
         w, h = size
         for p in self._confetti:

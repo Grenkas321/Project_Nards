@@ -165,9 +165,12 @@ def main(argv: list[str] | None = None) -> int:
     from nardy.ui.sounds import init_sounds
     init_sounds()
 
-    screen = pygame.display.set_mode((1024, 720), pygame.RESIZABLE)
+    windowed_size = (1024, 720)
+    min_size = (800, 600)
+    screen = pygame.display.set_mode(windowed_size, pygame.RESIZABLE)
     pygame.display.set_caption("Взрывные нарды")
     clock = pygame.time.Clock()
+    fullscreen = False
 
     # pygame.scrap (non-Windows clipboard fallback) needs a live window —
     # must be initialized after set_mode, never before.
@@ -186,6 +189,24 @@ def main(argv: list[str] | None = None) -> int:
             if event.type == pygame.QUIT:
                 controller.close()
                 break
+            if event.type == pygame.VIDEORESIZE and not fullscreen:
+                # A RESIZABLE window does NOT resize its draw surface on its
+                # own — recreate it (clamped to a sane minimum) so the board
+                # fills the whole window instead of sitting in a corner.
+                windowed_size = (max(min_size[0], event.w), max(min_size[1], event.h))
+                screen = pygame.display.set_mode(windowed_size, pygame.RESIZABLE)
+                continue
+            if event.type == pygame.KEYDOWN and event.key in (pygame.K_F11, pygame.K_F):
+                fullscreen = not fullscreen
+                if fullscreen:
+                    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode(windowed_size, pygame.RESIZABLE)
+                continue
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and fullscreen:
+                fullscreen = False
+                screen = pygame.display.set_mode(windowed_size, pygame.RESIZABLE)
+                continue
             controller.handle_event(event)
         controller.update(dt)
         controller.draw(screen)
