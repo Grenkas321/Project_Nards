@@ -51,6 +51,19 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_PORT,
         help=f"Socket match port (default: {DEFAULT_PORT}).",
     )
+    parser.add_argument(
+        "--tunnel",
+        action="store_true",
+        help="With --server: expose the server through a free internet tunnel "
+             "and print the public address as 'TUNNEL_ADDR host:port'.",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("long", "short"),
+        default=None,
+        help="With --server: start this game mode immediately instead of "
+             "showing the menu.",
+    )
     return parser
 
 
@@ -65,12 +78,10 @@ def build_application(
     from nardy.app.controller import AppController
     from nardy.domain.engine import build_default_engine
     from nardy.i18n import Localizer
-    from nardy.ui.shell import ApplicationShell
 
     if server_mode and join_mode:
         raise RuntimeError("Use either --server or --join, not both.")
 
-    shell = ApplicationShell()
     localizer = Localizer(locale_code=locale_code)
 
     # Determine effective socket host
@@ -86,7 +97,6 @@ def build_application(
         server.start_in_background()
         engine = RemoteEngineProxy(host=DEFAULT_HOST, port=socket_port)  # client connects to localhost
         return AppController(
-            shell=shell,
             engine=engine,
             localizer=localizer,
             controlled_player=Player.WHITE,
@@ -96,7 +106,6 @@ def build_application(
         engine = RemoteEngineProxy(host=effective_host, port=socket_port)
         # If connection failed, engine.error will be set and methods will raise
         return AppController(
-            shell=shell,
             engine=engine,
             localizer=localizer,
             controlled_player=engine.player,
@@ -104,15 +113,30 @@ def build_application(
         )
 
     engine = build_default_engine()
-    return AppController(shell=shell, engine=engine, localizer=localizer)
+    return AppController(engine=engine, localizer=localizer)
+
+
+def _pick_free_port() -> int:
+    """Ask the OS for a free TCP port."""
+    import socket
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
 
 
 def main(argv: list[str] | None = None) -> int:
     """Console entry point used by the project script."""
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.server and args.tunnel:
+        # Auto-hosted games pick a fresh free port. A fixed default port
+        # would silently attach to a leftover server from a previous game
+        # (Windows' SO_REUSEADDR allows rebinding a busy port), putting two
+        # hosts on one match.
+        args.socket_port = _pick_free_port()
     try:
-        application = build_application(
+        controller = build_application(
             locale_code=args.locale,
             server_mode=args.server,
             join_mode=args.join,
@@ -122,5 +146,50 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeError as e:
         print(f"Error: {e}")
         return 1
-    application.run()
+
+    if args.server and args.tunnel:
+        # The tunnel must live in THIS (game-hosting) process: if it ran in
+        # the menu process that spawned us, closing that window would cut
+        # the opponent's connection mid-game.
+        from nardy.net.tunnel import start_tunnel
+        addr, error = start_tunnel(args.socket_port)
+        if addr:
+            print(f"TUNNEL_ADDR {addr}", flush=True)
+        else:
+            print(f"TUNNEL_ERROR {error}", flush=True)
+
+    import pygame
+
+    pygame.init()
+
+    from nardy.ui.sounds import init_sounds
+    init_sounds()
+
+    screen = pygame.display.set_mode((1024, 720), pygame.RESIZABLE)
+    pygame.display.set_caption("Взрывные нарды")
+    clock = pygame.time.Clock()
+
+    # pygame.scrap (non-Windows clipboard fallback) needs a live window —
+    # must be initialized after set_mode, never before.
+    try:
+        pygame.scrap.init()
+    except Exception:
+        pass
+
+    controller.start()
+    if args.server and args.mode:
+        from nardy.domain.models import GameMode
+        controller.start_game(GameMode.LONG if args.mode == "long" else GameMode.SHORT)
+    while controller.running:
+        dt = clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                controller.close()
+                break
+            controller.handle_event(event)
+        controller.update(dt)
+        controller.draw(screen)
+        pygame.display.flip()
+
+    pygame.quit()
     return 0

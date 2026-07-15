@@ -12,7 +12,7 @@ license = "MIT"
 authors = [
   { name = "Nardy Team" },
 ]
-keywords = ["backgammon", "tkinter", "education", "game"]
+keywords = ["backgammon", "pygame", "education", "game"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Education",
@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Games/Entertainment :: Board Games",
 ]
-dependencies = ["Pillow>=10.0"]
+dependencies = ["Pillow>=10.0", "pygame>=2.5"]
 
 [project.optional-dependencies]
 dev = [
@@ -46,7 +46,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "nardy.i18n" = ["locale/**/*.po", "locale/**/*.mo"]
-"nardy.ui" = ["assets/*.wav"]
+"nardy.ui" = ["assets/*.wav", "assets/*.jpg"]
 
 [tool.setuptools.exclude-package-data]
 "nardy.i18n" = ["locale/messages.pot"]

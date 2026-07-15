@@ -647,27 +647,51 @@ def test_long_five_consecutive_is_allowed() -> None:
     assert 20 in legal_targets
 
 
-def test_long_six_consecutive_allowed_when_all_opponent_in_prime() -> None:
-    """6-block is allowed when all opponent checkers form a contiguous group."""
+def test_long_six_consecutive_allowed_when_opponent_in_home() -> None:
+    """6-block is allowed when opponent has a checker in their home board."""
     rules = LongNardyRules()
+    # Black's home is points 13-18. Place one Black checker there.
     state = _ready_state(
         mode=GameMode.LONG,
         player=Player.WHITE,
         layout={
-            24: (Player.WHITE, 1),
-            23: (Player.WHITE, 1),
+            23: (Player.WHITE, 2),
             22: (Player.WHITE, 1),
             21: (Player.WHITE, 1),
             20: (Player.WHITE, 1),
-            10: (Player.BLACK, 8),
-            9: (Player.BLACK, 7),
+            19: (Player.WHITE, 1),
+            12: (Player.BLACK, 14),
+            15: (Player.BLACK, 1),
         },
         remaining_pips=(5,),
         turn_number=5,
     )
 
     legal_targets = {move.target for move in rules.legal_moves(state)}
-    assert 19 in legal_targets
+    assert 18 in legal_targets
+
+
+def test_long_six_block_forbidden_when_opponent_not_in_home() -> None:
+    """6-block forbidden when no opponent checker is in their home board."""
+    rules = LongNardyRules()
+    # Black has no checkers in home (13-18), all on 12
+    state = _ready_state(
+        mode=GameMode.LONG,
+        player=Player.WHITE,
+        layout={
+            23: (Player.WHITE, 2),
+            22: (Player.WHITE, 1),
+            21: (Player.WHITE, 1),
+            20: (Player.WHITE, 1),
+            19: (Player.WHITE, 1),
+            12: (Player.BLACK, 15),
+        },
+        remaining_pips=(5,),
+        turn_number=5,
+    )
+
+    legal_targets = {move.target for move in rules.legal_moves(state)}
+    assert 18 not in legal_targets
 
 
 def test_long_blocking_rule_does_not_affect_short_nardy() -> None:
@@ -689,3 +713,49 @@ def test_long_blocking_rule_does_not_affect_short_nardy() -> None:
 
     legal_targets = {move.target for move in rules.legal_moves(state)}
     assert 19 in legal_targets
+
+
+# ---------- AI tests ----------
+
+
+def test_ai_easy_returns_valid_moves() -> None:
+    """Easy AI should return at least one valid move."""
+    from nardy.domain.ai import NardyAI
+
+    rules = LongNardyRules(randint=_sequence_randint([3, 5]))
+    state = rules.initial_state()
+    rolled = rules.start_turn(state)
+
+    ai = NardyAI("easy")
+    moves = ai.choose_moves(rolled, rules)
+
+    assert len(moves) >= 1
+    assert all(isinstance(m, Move) for m in moves)
+
+
+def test_ai_medium_returns_valid_moves() -> None:
+    """Medium AI should return a full move sequence."""
+    from nardy.domain.ai import NardyAI
+
+    rules = LongNardyRules(randint=_sequence_randint([2, 4]))
+    state = rules.initial_state()
+    rolled = rules.start_turn(state)
+
+    ai = NardyAI("medium")
+    moves = ai.choose_moves(rolled, rules)
+
+    assert len(moves) >= 1
+
+
+def test_ai_hard_returns_valid_moves() -> None:
+    """Hard AI should return a move sequence."""
+    from nardy.domain.ai import NardyAI
+
+    rules = LongNardyRules(randint=_sequence_randint([1, 3]))
+    state = rules.initial_state()
+    rolled = rules.start_turn(state)
+
+    ai = NardyAI("hard")
+    moves = ai.choose_moves(rolled, rules)
+
+    assert len(moves) >= 1

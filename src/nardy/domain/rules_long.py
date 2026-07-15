@@ -151,22 +151,17 @@ class LongNardyRules(BaseRuleset):
         if not runs:
             return False
 
-        opponent_indices = [
-            i for i, pt in enumerate(opponent_path)
-            if state.point(pt).owner is opponent and state.point(pt).checkers > 0
-        ]
-        has_bar = state.bar_for(opponent) > 0
+        # Wall of 6+ is allowed ONLY if opponent has at least one
+        # checker in their home board (bearing-off zone)
+        home = set(self.home_points_for(opponent))
+        opponent_in_home = any(
+            state.point(pt).owner is opponent and state.point(pt).checkers > 0
+            for pt in home
+        )
+        if opponent_in_home:
+            return False
 
-        for block_start, block_end in runs:
-            if has_bar:
-                return True
-            if not opponent_indices:
-                continue
-            all_behind = all(idx < block_start for idx in opponent_indices)
-            if all_behind:
-                return True
-
-        return False
+        return True
 
     @staticmethod
     def _path_for(player: Player) -> tuple[int, ...]:

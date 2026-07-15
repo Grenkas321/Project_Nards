@@ -1,17 +1,16 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: nardy 0.1.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-12 14:21+0300\n"
-"PO-Revision-Date: 2026-06-28 00:00+0000\n"
-"Last-Translator: Nardy Team\n"
-"Language: hy\n"
-"Language-Team: Armenian\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: nardy 0.1.0
+"
+"Language: hy
+"
+"MIME-Version: 1.0
+"
+"Content-Type: text/plain; charset=utf-8
+"
+"Content-Transfer-Encoding: 8bit
+"
 
 msgid "Undo is unavailable."
 msgstr "Հետարկումը անհասանելի է։"
@@ -20,7 +19,7 @@ msgid "Nardy"
 msgstr "Նարդի"
 
 msgid "Waiting for opponent."
-msgstr "Սպասում ենք մրցակիցին։"
+msgstr "Սպասում ենք մրցակցին։"
 
 msgid "Victory"
 msgstr "Հաղթանակ"
@@ -50,13 +49,13 @@ msgid "Unknown player"
 msgstr "Անհայտ խաղացող"
 
 msgid "{player}: roll dice."
-msgstr "{player}. գցեք զառերը։"
+msgstr "{player}՝ գցեք զառերը։"
 
 msgid "{player}: choose a highlighted checker."
-msgstr "{player}. ընտրեք լուսավորված խաղաքարը։"
+msgstr "{player}՝ ընտրեք լուսավորված խաղաքարը։"
 
 msgid "{player}: turn finished."
-msgstr "{player}. քայլը ավարտվեց։"
+msgstr "{player}՝ քայլը ավարտվեց։"
 
 msgid "Roll dice"
 msgstr "Գցել զառերը"
@@ -98,7 +97,7 @@ msgid "Host LAN Game"
 msgstr "Ստեղծել LAN խաղ"
 
 msgid "Port:"
-msgstr "Պորտ."
+msgstr "Պորտ՝"
 
 msgid "Host"
 msgstr "Ստեղծել"
@@ -107,13 +106,218 @@ msgid "Join LAN Game"
 msgstr "Միանալ LAN խաղին"
 
 msgid "Host IP:"
-msgstr "IP հասցե."
+msgstr "IP հասցե՝"
 
 msgid "Join"
 msgstr "Միանալ"
 
 msgid "Bone"
-msgstr " Delays"
+msgstr "Ոսկոր"
 
 msgid "Wood"
-msgstr "Delays"
+msgstr "Ծառ"
+
+msgid "Explosive Backgammon"
+msgstr "Պայթուցիկ նարդի"
+
+msgid "Play"
+msgstr "Խաղալ"
+
+msgid "Rules"
+msgstr "Կանոններ"
+
+msgid "Style"
+msgstr "Ոճ"
+
+msgid "vs Network"
+msgstr "Ձանցով"
+
+msgid "vs AI"
+msgstr "AI-ի դեմ"
+
+msgid "Local game"
+msgstr "Մեկ սարքի վրա"
+
+msgid "Choose difficulty"
+msgstr "Ընտրեք դժվարությունը"
+
+msgid "Easy"
+msgstr "Հեշտ"
+
+msgid "Medium"
+msgstr "Միջին"
+
+msgid "Hard"
+msgstr "Դժվար"
+
+msgid "Pro"
+msgstr "Pro"
+
+msgid "Your IP"
+msgstr "Ձեր IP"
+
+msgid "Your color"
+msgstr "Ձեր գույնը"
+
+msgid "LONG BACKGAMMON"
+msgstr "ԵՐԿԱՐ ՆԱՐԴԻ"
+
+msgid "SHORT BACKGAMMON"
+msgstr "ԿԱՐՃ ՆԱՐԴԻ"
+
+msgid "Setup"
+msgstr "Պայմանավորվածություն"
+
+msgid "Movement"
+msgstr "Շարժում"
+
+msgid "Head Rule"
+msgstr "Գլխի կանոն"
+
+msgid "Blocking"
+msgstr "Կողպեք"
+
+msgid "Bearing Off"
+msgstr "Շաշկի հեռացում"
+
+msgid "Bar:"
+msgstr "Բար:"
+
+msgid "• White places 15 checkers on point 24"
+msgstr "• Սպիտակները 24-րդ կետում տեղադրում են 15 խաղաքարեր"
+
+msgid "• Black places 15 checkers on point 12"
+msgstr "• Սևը տեղադրում է 15 խաղաքար 12-րդ կետում"
+
+msgid "• Both players move counter-clockwise"
+msgstr "• Երկու խաղացողներն էլ շարժվում են ժամացույցի սլաքի հակառակ ուղղությամբ"
+
+msgid "• Roll two dice and move checkers by the values shown"
+msgstr "• Գլորեք երկու զառեր և տեղափոխեք խաղաքարերը գլորված թվերի վրա"
+
+msgid "• You cannot land on a point occupied by your opponent"
+msgstr "• Դուք չեք կարող խաղաքար դնել հակառակորդի կողմից զբաղեցրած կետի վրա:"
+
+msgid "• On doubles, you get 4 moves of that value"
+msgstr "• Կրկնակի վրա դուք ստանում եք 4 պտույտ այս արժեքով"
+
+msgid "• Only one checker may leave the starting point per turn"
+msgstr "• Դուք կարող եք միայն մեկ խաղաքար հեռացնել ձեր գլխից յուրաքանչյուր քայլի համար:"
+
+msgid "• Exception: on the first turn, doubles allow two from head"
+msgstr "• Կրկնակի ժամանակ առաջին քայլում կարող եք հեռացնել երկու խաղաքար"
+
+msgid "• You cannot create a wall of 6+ consecutive points if all opponent checkers are behind it"
+msgstr "• Դուք չեք կարող անընդմեջ կառուցել 6 կամ ավելի միավորից բաղկացած էկրան, քանի դեռ հակառակորդը խաղաքարը չի բերել իր տուն"
+
+msgid "• A wall of 6 is allowed only if at least one opponent checker has passed it"
+msgstr "• 6-ի էկրանը թույլատրվում է, երբ մրցակցի խաղաքարերից առնվազն մեկն արդեն իր տնային քառորդում է"
+
+msgid "• Once all checkers are in your home board, you can start bearing them off"
+msgstr "• Երբ տան բոլոր շաշկիները կարող եք սկսել հեռացնել դրանք"
+
+msgid "• The first player to bear off all 15 checkers wins"
+msgstr "• Առաջինը, ով կհեռացնի բոլոր 15 խաղաքարերը, հաղթում է:"
+
+msgid "• Standard backgammon starting position"
+msgstr "• Ստանդարտ մեկնարկային նարդի տեղադրում"
+
+msgid "• You CAN land on a point with a single opponent checker, capturing it to the bar"
+msgstr "• Դուք կարող եք խաղաքար դնել ձեր հակառակորդի խաղաքարերից մեկի վրա՝ այն ուղարկելով գծի վրա"
+
+msgid "• A captured checker must re-enter from the opponent's home board before other moves"
+msgstr "• Թակված խաղաքարտը պետք է ներս մտնի հակառակորդի տնից՝ նախքան մյուս շարժումները"
+
+msgid "• Same as long backgammon — all checkers must be home first"
+msgstr "• Ինչպես նարդիում, այնպես էլ բոլոր խաղաքարերը պետք է տանը լինեն"
+
+msgid "Online"
+msgstr "Առցանց"
+
+msgid "Easy way (automatic)"
+msgstr "Հեշտ ճանապարհ ավտոմատ կերպով"
+
+msgid "Host — share code with opponent"
+msgstr "Ստեղծեք և տարածեք կոդը ձեր հակառակորդի հետ"
+
+msgid "Code from host"
+msgstr "Հոսթի կոդը"
+
+msgid "Advanced (manual IP)"
+msgstr "Ընդլայնված ձեռնարկ IP"
+
+msgid "Starting tunnel..."
+msgstr "Թունելի սկիզբ..."
+
+msgid "ssh not found — needed for Online play."
+msgstr "ssh չի գտնվել — անհրաժեշտ է առցանց խաղի համար."
+
+msgid "Share this code with opponent"
+msgstr "Ուղարկեք այս կոդը ձեր հակառակորդին"
+
+msgid "Copy code"
+msgstr "Պատճենել կոդը"
+
+msgid "Copied!"
+msgstr "Պատճենված է!"
+
+msgid "Game server started! Opponent enters the code above to connect."
+msgstr "Սերվերը աշխատում է Հակառակորդը մուտքագրում է կոդը միանալու համար"
+
+
+msgid "Backgammon is a traditional game for two players. Each player has 15 checkers. The goal is to move all the checkers counterclockwise across the entire board, bring them into your home and remove them before your opponent."
+msgstr "Նարդին ավանդական խաղ է երկու խաղացողների համար: Յուրաքանչյուր խաղացող ունի 15 խաղաքար: Նպատակը բոլոր խաղաքարերը ժամացույցի սլաքի ուղղությամբ հակառակ ուղղությամբ տեղափոխելն է ամբողջ տախտակի վրայով, դրանք բերել ձեր տուն և հեռացնել հակառակորդի առաջ:"
+
+msgid "At the beginning of the game, all 15 white checkers are on point 24, all 15 black checkers are on point 12. This is called the “head”. White moves from 24 to 1. Black moves from 12 through 1 and then in a circle to 13."
+msgstr "Խաղի սկզբում բոլոր 15 սպիտակ խաղաքարերը գտնվում են 24-րդ կետում, բոլոր 15 սև խաղաքարերը՝ 12-րդ կետում: Սա կոչվում է «գլուխ»: Սպիտակը շարժվում է 24-ից 1: Սևը շարժվում է 12-ից 1-ի միջով, այնուհետև շրջանագծով 13-ը:"
+
+msgid "Players take turns rolling two dice and moving the checkers by the number of points rolled. Each die value is a separate move with one checker (or two different checkers). If a double is rolled (the same numbers on both dice), the number of moves is doubled: instead of two moves, the player makes four moves with this value."
+msgstr "Խաղացողները հերթով գլորում են երկու զառեր և տեղափոխում խաղաքարերը գլորված կետերի քանակով: Մատերի յուրաքանչյուր արժեք առանձին քայլ է մեկ խաղաքարով (կամ երկու տարբեր խաղաքարերով): Եթե ​​կրկնակի գլորվում է (երկու զառերի վրա նույն թվերը), ապա շարժումների թիվը կրկնապատկվում է. երկու քայլի փոխարեն խաղացողը չորս քայլ է անում այս արժեքով:"
+
+msgid "You cannot place a checker on a point occupied by at least one opponent's checker. In long backgammon there is no capture (combat) - opponents' checkers simply cannot be on the same point at the same time."
+msgstr "Դուք չեք կարող շաշկի տեղադրել այն կետի վրա, որը զբաղեցնում է առնվազն մեկ հակառակորդի խաղաքար: Երկար նարդիում գրավում (կռիվ) չկա. հակառակորդների խաղաքարերը պարզապես չեն կարող միաժամանակ լինել նույն կետում:"
+
+msgid "If a move is possible in at least one way, the player must make it, even if it is disadvantageous. If no dice can be used, the turn is skipped."
+msgstr "Եթե ​​քայլը հնարավոր է առնվազն մեկ ձևով, խաղացողը պետք է կատարի այն, նույնիսկ եթե դա անբարենպաստ է: Եթե ​​ոչ մի զառ չի կարող օգտագործվել, հերթը բաց է թողնվում:"
+
+msgid "Only one checker can be removed from the head (starting point) per move. The exception applies once during the entire game: if on the very first move a player throws a double 3-3, 4-4 or 6-6, he is allowed to remove two checkers from his head at once."
+msgstr "Մեկ քայլի համար գլխից (ելակետից) կարելի է հեռացնել միայն մեկ խաղաքար: Բացառությունը գործում է մեկ անգամ ամբողջ խաղի ընթացքում. եթե առաջին իսկ քայլում խաղացողը կրկնակի 3-3, 4-4 կամ 6-6 է նետում, ապա նրան թույլատրվում է գլխից միանգամից երկու խաղաքար հեռացնել:"
+
+msgid "It is prohibited to build a continuous screen of six or more points in a row occupied by your own checkers, if not a single checker of the opponent has yet entered its home quarter (the zone from which checkers are removed). As soon as the opponent has at least one checker in his house, building such a screen is allowed."
+msgstr "Արգելվում է անընդմեջ կառուցել վեց կամ ավելի կետերի շարունակական էկրան, որը զբաղեցնում է ձեր սեփական խաղաքարերը, եթե հակառակորդի ոչ մի խաղաքար դեռ չի մտել իր տնային քառորդը (գոտի, որտեղից խաղաքարերը հանվում են): Հենց որ հակառակորդն իր տանը գոնե մեկ խաղաքար ունենա, թույլատրվում է նման էկրան կառուցել։"
+
+msgid "When all 15 of a player's checkers are in his home (the last quarter of the way), he begins to remove them from the board. A checker is removed if the rolled number of the cube exactly matches its position, or - if there are no checkers at more distant points of the house - with a larger number."
+msgstr "Երբ խաղացողի բոլոր 15 խաղաքարերը գտնվում են նրա տանը (ճանապարհի վերջին քառորդը), նա սկսում է դրանք հեռացնել խաղատախտակից: Շաշիկը հանվում է, եթե խորանարդի գլորված թիվը ճիշտ է համապատասխանում իր դիրքին, կամ եթե տան ավելի հեռավոր կետերում շաշկի չկա, ավելի մեծ թվով:"
+
+msgid "The winner is the player who is the first to remove all 15 of his checkers from the board."
+msgstr "Հաղթում է այն խաղացողը, ով առաջինը կհանի իր բոլոր 15 խաղաքարերը խաղատախտակից:"
+
+msgid "Short backgammon (classic backgammon, backgammon) is a game for two players with the ability to capture the opponent’s checkers. Each player has 15 checkers."
+msgstr "Կարճ նարդի (դասական նարդի, նարդի) խաղ է երկու խաղացողների համար՝ հակառակորդի խաղաքարերը գրավելու ունակությամբ: Յուրաքանչյուր խաղացող ունի 15 խաղաքար:"
+
+msgid "The initial arrangement is standard: White has 2 checkers at point 24, 5 at point 13, 3 at point 8 and 5 at point 6. Black has a mirror: 2 at point 1, 5 at point 12, 3 at point 17 and 5 at point 19. White moves from 24 to 1, black - from 1 to 24."
+msgstr "Նախնական դասավորությունը ստանդարտ է՝ սպիտակը ունի 2 շաշկի 24-րդ կետում, 5-ը՝ 13-րդ կետում, 3-ը՝ 8-րդ կետում և 5-րդը՝ 6-րդ կետում: Սևն ունի հայելի՝ 2-ը՝ 1-ին կետում, 5-ը՝ 12-րդ կետում, 3-ը՝ 17-րդ կետում և 5-ը՝ 19-րդ կետում: Սպիտակը շարժվում է 24-ից 1-ը, սևը՝ 1-ից մինչև 24:"
+
+msgid "Two dice are rolled and the checkers are moved to the values ​​shown. With a double, the number of moves doubles to four."
+msgstr "Երկու զառ է գլորվում, և խաղաքարերը տեղափոխվում են ցույց տրված արժեքներին: Կրկնակի դեպքում շարժումների թիվը կրկնապատկվում է՝ հասնելով չորսի:"
+
+msgid "If there is exactly one opponent's checker (blot) on a point, you can place your own checker on it - the opponent's checker is removed from the board and sent to the bar (the middle of the board). A point with two or more opponent's checkers is blocked - you cannot stand on it."
+msgstr "Եթե ​​կետի վրա կա ուղիղ մեկ հակառակորդի խաղաքար (բլոտ), կարող եք դրա վրա տեղադրել ձեր սեփական խաղաքարը՝ հակառակորդի խաղաքարը հանվում է խաղատախտակից և ուղարկվում գծապատկեր (տախտակի կեսը): Մրցակցի երկու կամ ավելի խաղաքարերով կետն արգելափակված է. դուք չեք կարող կանգնել դրա վրա:"
+
+msgid "The checker from the bar must come into play first before the player makes any other move. The entry is made into the opponent's home quarter, at the point corresponding to the value of the die. If all the necessary points are blocked, the move is skipped completely."
+msgstr "Նախքան խաղացողը որևէ այլ քայլ կատարելը, նախ պետք է խաղադաշտ դուրս գա խաղաքարտը: Մուտքագրումը կատարվում է հակառակորդի տնային քառորդում, մեռնողի արժեքին համապատասխան կետում: Եթե ​​բոլոր անհրաժեշտ կետերն արգելափակված են, քայլն ամբողջությամբ բաց է թողնվում:"
+
+msgid "Removal of checkers begins only when all 15 of a player's checkers are in his house. The withdrawal principle is the same as in long backgammon."
+msgstr "Շաշկի հանումը սկսվում է միայն այն ժամանակ, երբ խաղացողի բոլոր 15 խաղաքարերը գտնվում են նրա տանը: Հեռացման սկզբունքը նույնն է, ինչ երկար նարդիում։"
+
+msgid "The winner is the player who is the first to remove all his checkers from the board."
+msgstr "Հաղթում է այն խաղացողը, ով առաջինը կհեռացնի իր բոլոր խաղաքարերը խաղատախտակից:"
+
+msgid "Capturing"
+msgstr "Գրավում"
+
+msgid "The Bar"
+msgstr "Բար"
+
+msgid "Play again"
+msgstr "Խաղալ նորից"

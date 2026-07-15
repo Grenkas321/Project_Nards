@@ -1,57 +1,54 @@
-"""Sound effects from real backgammon recording."""
+"""Sound effects via pygame.mixer — cross-platform, no threading needed."""
 
 from __future__ import annotations
 
-import sys
-import threading
 from pathlib import Path
 
+import pygame
+
 _ASSETS = Path(__file__).with_name("assets")
+_sounds: dict[str, pygame.mixer.Sound] = {}
+_enabled = False
 
 
-def _load(name: str) -> bytes:
-    """Load a WAV file from assets directory."""
-    path = _ASSETS / name
-    if path.exists():
-        return path.read_bytes()
-    return b""
+def init_sounds() -> None:
+    """Initialize the mixer and pre-load all sound effects."""
+    global _enabled
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        for name in ("dice_hit", "dice_roll", "dice_land", "checker_place"):
+            path = _ASSETS / f"{name}.wav"
+            if path.exists():
+                _sounds[name] = pygame.mixer.Sound(str(path))
+        _enabled = True
+    except Exception:
+        _enabled = False
 
 
-_DICE_HIT = _load("dice_hit.wav")
-_DICE_ROLL = _load("dice_roll.wav")
-_DICE_LAND = _load("dice_land.wav")
-_CHECKER_PLACE = _load("checker_place.wav")
+def _play(name: str) -> None:
+    if not _enabled:
+        return
+    sound = _sounds.get(name)
+    if sound is not None:
+        sound.play()
 
 
 def play_dice_hit() -> None:
     """Single dice bounce."""
-    _play_async(_DICE_HIT)
+    _play("dice_hit")
 
 
 def play_dice_roll() -> None:
-    """Full dice rolling sequence (use at animation start)."""
-    _play_async(_DICE_ROLL)
+    """Full dice rolling sequence."""
+    _play("dice_roll")
 
 
 def play_dice_land() -> None:
     """Dice settling thud."""
-    _play_async(_DICE_LAND)
+    _play("dice_land")
 
 
 def play_checker_place() -> None:
     """Checker placed on board."""
-    _play_async(_CHECKER_PLACE)
-
-
-def _play_async(wav_data: bytes) -> None:
-    if sys.platform != "win32" or not wav_data:
-        return
-    threading.Thread(target=_play, args=(wav_data,), daemon=True).start()
-
-
-def _play(wav_data: bytes) -> None:
-    try:
-        import winsound
-        winsound.PlaySound(wav_data, winsound.SND_MEMORY | winsound.SND_NOSTOP)
-    except Exception:
-        pass
+    _play("checker_place")

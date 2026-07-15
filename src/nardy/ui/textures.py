@@ -7,10 +7,18 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from PIL import Image, ImageDraw, ImageFilter, ImageTk
+import pygame
+from PIL import Image, ImageDraw, ImageFilter
 
 SUPERSAMPLE = 2
 _ASSETS = Path(__file__).with_name("assets")
+
+
+def pil_to_surface(img: Image.Image) -> pygame.Surface:
+    """Convert a PIL Image to a pygame Surface, preserving alpha."""
+    img = img.convert("RGBA")
+    return pygame.image.fromstring(img.tobytes(), img.size, "RGBA").convert_alpha()
+
 
 # Board color themes
 THEMES = {
@@ -63,9 +71,9 @@ def _load_asset(name: str) -> Image.Image | None:
 # ── Checkers ──────────────────────────────────────────────────────────
 
 @lru_cache(maxsize=32)
-def checker_photo(diameter: int, is_white: bool) -> ImageTk.PhotoImage:
-    """Return a cached PhotoImage of a checker."""
-    return ImageTk.PhotoImage(_checker_image(diameter, is_white))
+def checker_photo(diameter: int, is_white: bool) -> pygame.Surface:
+    """Return a cached Surface of a checker."""
+    return pil_to_surface(_checker_image(diameter, is_white))
 
 
 def _checker_image(diameter: int, is_white: bool) -> Image.Image:
@@ -132,7 +140,7 @@ def _checker_image(diameter: int, is_white: bool) -> Image.Image:
 
 
 @lru_cache(maxsize=16)
-def shadow_photo(diameter: int) -> ImageTk.PhotoImage:
+def shadow_photo(diameter: int) -> pygame.Surface:
     """Return a soft circular shadow image."""
     big = diameter * SUPERSAMPLE
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
@@ -149,15 +157,15 @@ def shadow_photo(diameter: int) -> ImageTk.PhotoImage:
     ImageDraw.Draw(mask).ellipse([0, 0, big - 1, big - 1], fill=255)
     clipped = ImageChops.multiply(img.split()[3], mask)
     img.putalpha(clipped)
-    return ImageTk.PhotoImage(img.resize((diameter, diameter), Image.LANCZOS))
+    return pil_to_surface(img.resize((diameter, diameter), Image.LANCZOS))
 
 
 # ── Dice (ivory) ─────────────────────────────────────────────────────
 
 @lru_cache(maxsize=12)
-def die_photo(size: int, value: int) -> ImageTk.PhotoImage:
-    """Return a cached PhotoImage of a die face."""
-    return ImageTk.PhotoImage(_die_image(size, value))
+def die_photo(size: int, value: int) -> pygame.Surface:
+    """Return a cached Surface of a die face."""
+    return pil_to_surface(_die_image(size, value))
 
 
 def _die_image(size: int, value: int) -> Image.Image:
@@ -381,28 +389,15 @@ def triangle_image(
     # Outline
     draw.polygon(body, fill=None, outline=edge_color, width=ow)
 
-    # Ornamental tip — curled flourish
+    # Ornamental tip — a single subtle curl. (The old triple-scroll + red
+    # dot repeated 24 times read as visual clutter, especially on bone.)
     tip_y = big_h - big_h // 10 if pointing == "down" else big_h // 10
-    # Main curl
-    curl_r = max(4, big_w // 5)
+    curl_r = max(3, big_w // 7)
     draw.ellipse([cx - curl_r, tip_y - curl_r, cx + curl_r, tip_y + curl_r],
-                 fill=tip_color, outline=edge_color, width=max(1, ow))
-    # Inner curl detail
-    cr2 = max(2, curl_r * 2 // 3)
+                 fill=tip_color, outline=edge_color, width=max(1, ow - 1))
+    cr2 = max(1, curl_r // 2)
     draw.ellipse([cx - cr2, tip_y - cr2, cx + cr2, tip_y + cr2],
-                 fill=inner_color, outline=edge_color, width=max(1, ow - 1))
-    # Side scrolls
-    scroll_r = max(2, curl_r // 2)
-    for dx in (-curl_r, curl_r):
-        sx = cx + dx
-        draw.ellipse([sx - scroll_r, tip_y - scroll_r,
-                      sx + scroll_r, tip_y + scroll_r],
-                     fill=tip_color, outline=edge_color, width=max(1, ow - 1))
-
-    # Small red accent dot at center of tip
-    dot_r = max(1, big_w // 16)
-    draw.ellipse([cx - dot_r, tip_y - dot_r, cx + dot_r, tip_y + dot_r],
-                 fill=(160, 40, 30, 200))
+                 fill=inner_color)
 
     return img.resize((width, height), Image.LANCZOS)
 
@@ -424,7 +419,7 @@ def _ornament_eastern(width: int, height: int) -> Image.Image:
 
     dark = (40, 30, 20, 240)
     brown = (85, 50, 28, 210)
-    green = (30, 70, 35, 190)
+    green = (110, 72, 34, 190)  # warm ochre; true green clashed with the wood palette
     red = (150, 35, 25, 210)
     gold = (160, 120, 50, 180)
     lw = max(2, R // 7)

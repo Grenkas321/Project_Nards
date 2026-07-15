@@ -34,32 +34,41 @@ def test_parser_supports_socket_mode_flags() -> None:
 
 
 def test_main_runs_application(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The bootstrap entry point should create and run the application."""
+    """The bootstrap entry point should create and start the application."""
 
-    class DummyApplication:
+    class DummyController:
         def __init__(self) -> None:
-            self.ran = False
+            self.started = False
+            self.running = False  # exit the loop immediately
 
-        def run(self) -> None:
-            self.ran = True
+        def start(self) -> None:
+            self.started = True
 
-    application = DummyApplication()
+        def handle_event(self, event) -> None:
+            pass
+
+        def update(self, dt_ms: int) -> None:
+            pass
+
+        def draw(self, surface) -> None:
+            pass
+
+    controller = DummyController()
 
     def _build_application(
         locale_code: str = "en",
         server_mode: bool = False,
         join_mode: bool = False,
-        socket_host: str | None = None,   # разрешаем None
+        socket_host: str | None = None,
         socket_port: int = 8765,
-    ) -> DummyApplication:
+    ) -> DummyController:
         assert locale_code == "ru"
         assert server_mode is False
         assert join_mode is False
-        # In non‑network mode socket_host can be None or anything, skip check
         if socket_host is not None:
-            assert socket_host == "127.0.0.1"  # or just ignore
+            assert socket_host == "127.0.0.1"
         assert socket_port == 8765
-        return application
+        return controller
 
     monkeypatch.setattr(
         "nardy.app.bootstrap.build_application",
@@ -67,7 +76,7 @@ def test_main_runs_application(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
     assert main(["--locale", "ru"]) == 0
-    assert application.ran is True
+    assert controller.started is True
 
 
 def test_build_application_rejects_conflicting_modes() -> None:
@@ -80,9 +89,6 @@ def test_build_application_server_mode_wires_remote_dependencies(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Server mode should start local server and control white player."""
-
-    class DummyShell:
-        """Minimal shell placeholder."""
 
     class DummyLocalizer:
         """Minimal localizer placeholder."""
@@ -125,7 +131,6 @@ def test_build_application_server_mode_wires_remote_dependencies(
         created_server["instance"] = server
         return server
 
-    monkeypatch.setattr("nardy.ui.shell.ApplicationShell", DummyShell)
     monkeypatch.setattr("nardy.i18n.Localizer", DummyLocalizer)
     monkeypatch.setattr("nardy.app.controller.AppController", DummyController)
     monkeypatch.setattr("nardy.app.bootstrap.MatchServer", _server_factory)
@@ -147,9 +152,6 @@ def test_build_application_join_mode_uses_remote_player(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Join mode should pass remote assigned player to controller."""
-
-    class DummyShell:
-        """Minimal shell placeholder."""
 
     class DummyLocalizer:
         """Minimal localizer placeholder."""
@@ -174,7 +176,6 @@ def test_build_application_join_mode_uses_remote_player(
         def wait_for_update(self):
             return None
 
-    monkeypatch.setattr("nardy.ui.shell.ApplicationShell", DummyShell)
     monkeypatch.setattr("nardy.i18n.Localizer", DummyLocalizer)
     monkeypatch.setattr("nardy.app.controller.AppController", DummyController)
     monkeypatch.setattr("nardy.app.bootstrap.RemoteEngineProxy", DummyRemoteEngine)
@@ -193,10 +194,7 @@ def test_build_application_join_mode_uses_remote_player(
 def test_build_application_local_mode_uses_default_engine(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Local mode should construct shell, localizer and default engine."""
-
-    class DummyShell:
-        """Minimal shell placeholder."""
+    """Local mode should construct localizer and default engine."""
 
     class DummyLocalizer:
         """Capture locale selection."""
@@ -214,7 +212,6 @@ def test_build_application_local_mode_uses_default_engine(
             self.kwargs = kwargs
 
     engine = DummyEngine()
-    monkeypatch.setattr("nardy.ui.shell.ApplicationShell", DummyShell)
     monkeypatch.setattr("nardy.i18n.Localizer", DummyLocalizer)
     monkeypatch.setattr("nardy.app.controller.AppController", DummyController)
     monkeypatch.setattr(
@@ -224,7 +221,6 @@ def test_build_application_local_mode_uses_default_engine(
 
     app = build_application(locale_code="ru")
 
-    assert isinstance(app.kwargs["shell"], DummyShell)
     assert app.kwargs["engine"] is engine
     assert app.kwargs["localizer"].locale_code == "ru"
 
