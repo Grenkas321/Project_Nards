@@ -113,10 +113,18 @@ class _BaseMenuScreen:
 
     def _reposition_buttons(self, size: tuple[int, int]) -> None:
         w, h = size
+        # Horizontal positions map around window center within a bounded
+        # content band, not the full window width. Cards are capped in
+        # width, so raw window-fraction x-positions push off-center buttons
+        # (e.g. language row) outside the card border on wide/fullscreen
+        # windows.
+        content_w = min(w, 520)
+        cx = w / 2
         for btn in self._buttons:
             relx = getattr(btn, "_relx", 0.5)
             rely = getattr(btn, "_rely", 0.5)
-            btn.set_center((int(w * relx), int(h * rely)))
+            x = cx + (relx - 0.5) * content_w
+            btn.set_center((int(x), int(h * rely)))
 
     def _draw_title(self, surface: pygame.Surface, text: str, rely: float = 0.06, size: int = 34) -> None:
         w, h = surface.get_size()
@@ -525,7 +533,7 @@ class PlayModeScreen(_BaseMenuScreen):
             theme = THEMES[key]
             btn = self._add_button(
                 t(_(theme["label"])), (lambda k=key: self._select_theme(k)),
-                0.42 + i * 0.16, 0.78, size=16,
+                0.38 + i * 0.24, 0.78, size=16,
             )
             self._theme_buttons[key] = btn
         self._highlight_theme()
@@ -595,18 +603,18 @@ class AIMenuScreen(_BaseMenuScreen):
 
         self._color_buttons: dict[str, Button] = {
             "white": self._add_button(t(_("White")), lambda: self._select_color("white"),
-                                      0.42, 0.68, size=16),
+                                      0.40, 0.68, size=16),
             "black": self._add_button(t(_("Black")), lambda: self._select_color("black"),
-                                      0.58, 0.68, size=16),
+                                      0.64, 0.68, size=16),
         }
         self._highlight_color()
 
         self._add_button(t(_("Long backgammon")),
                          lambda: on_start("long", self._selected_diff, self._selected_color),
-                         0.35, 0.80, size=16)
+                         0.28, 0.80, size=15)
         self._add_button(t(_("Short backgammon")),
                          lambda: on_start("short", self._selected_diff, self._selected_color),
-                         0.65, 0.80, size=16)
+                         0.72, 0.80, size=15)
 
         self._add_button(t(_("Back to menu")), on_back, 0.5, 0.92, size=15, bold=False)
 
@@ -722,9 +730,9 @@ class NetworkMenuScreen(_BaseMenuScreen):
         self._selected_mode = "long"
         self._mode_buttons: dict[str, Button] = {
             "long": self._add_button(t(_("Long backgammon")),
-                                     lambda: self._select_mode("long"), 0.38, 0.235, size=20),
+                                     lambda: self._select_mode("long"), 0.28, 0.235, size=18),
             "short": self._add_button(t(_("Short backgammon")),
-                                      lambda: self._select_mode("short"), 0.62, 0.235, size=20),
+                                      lambda: self._select_mode("short"), 0.72, 0.235, size=18),
         }
         self._highlight_mode()
 
